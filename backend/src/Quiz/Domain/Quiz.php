@@ -103,6 +103,11 @@ class Quiz
         return $this->getStatusChange(QuizState::STARTED)->getChangedAt()->modify(sprintf('+%d minutes', $this->configuration->getDuration()));
     }
 
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->getStatusChange(QuizState::CREATED)->getChangedAt();
+    }
+
     private function getStatusChange(QuizState $state): QuizStateChange
     {
         foreach ($this->stateChanges->toArray() as $change) {

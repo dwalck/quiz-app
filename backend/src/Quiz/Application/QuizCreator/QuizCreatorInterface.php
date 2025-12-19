@@ -2,12 +2,16 @@
 
 namespace App\Quiz\Application\QuizCreator;
 
+use App\Quiz\Domain\Question;
 use App\Quiz\Domain\Quiz;
 
 interface QuizCreatorInterface
 {
+    /**
+     * @param array<Question> $questions
+     */
     public function create(
-        int $questionsCount,
+        array $questions,
         int $duration,
         int $passingScore
     ): Quiz;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Quiz\Domain\Exception;
+namespace App\Tests\Unit\Quiz\Domain\Exception;
 
 use App\Quiz\Domain\Enum\QuizState;
 use App\Quiz\Domain\Exception\CannotChangeQuizStateException;

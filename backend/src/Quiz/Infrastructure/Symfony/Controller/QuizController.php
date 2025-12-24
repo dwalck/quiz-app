@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Infrastructure\Symfony\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -10,8 +12,5 @@ final class QuizController
 {
     public function __invoke(): JsonResponse
     {
-
-
-
     }
 }

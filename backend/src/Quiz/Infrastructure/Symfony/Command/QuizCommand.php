@@ -14,22 +14,19 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final readonly class QuizCommand
 {
     public function __construct(
-        private QuizCreatorInterface $quizCreator
-    )
-    {
+        private QuizCreatorInterface $quizCreator,
+    ) {
     }
 
     public function __invoke(
         SymfonyStyle $io,
         #[Option] int $questionsCount = 100,
         #[Option] int $duration = 60,
-        #[Option] int $passingScore = 70
-    ): int
-    {
+        #[Option] int $passingScore = 70,
+    ): int {
         $quiz = $this->quizCreator->create($questionsCount, $duration, $passingScore);
 
         foreach ($quiz->getQuestions() as $question) {
-            $io->
         }
 
         return Command::SUCCESS;

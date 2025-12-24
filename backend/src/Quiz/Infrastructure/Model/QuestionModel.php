@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Infrastructure\Model;
 
 use Symfony\Component\Uid\Uuid;
@@ -13,9 +15,8 @@ final readonly class QuestionModel
     public function __construct(
         public Uuid $uuid,
         public string $content,
-        public array $answers
-    )
-    {
+        public array $answers,
+    ) {
         Assert::allIsInstanceOf($this->answers, QuestionAnswerModel::class);
     }
 }

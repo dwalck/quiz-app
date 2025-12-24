@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Application\GetQuestions;
 
 use App\Quiz\Infrastructure\Doctrine\Repository\QuestionRepository;
@@ -7,18 +9,17 @@ use App\Quiz\Infrastructure\Doctrine\Repository\QuestionRepository;
 readonly class GetQuestionsHandler
 {
     public function __construct(
-        private QuestionRepository $questionRepository
-    )
-    {
+        private QuestionRepository $questionRepository,
+    ) {
     }
 
     public function query(GetQuestionsQuery $query): array
     {
         $allIds = $this->questionRepository->getAllIds();
 
-        $count = min($query->questionsCount, count($allIds));
+        $count = \min($query->questionsCount, \count($allIds));
 
-        $keys = array_rand($allIds, $count);
+        $keys = \array_rand($allIds, $count);
 
         $ids = [];
         foreach ($keys as $key) {

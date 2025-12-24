@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Domain;
 
 use Doctrine\DBAL\Types\Types;
@@ -9,28 +11,27 @@ use Doctrine\ORM\Mapping as ORM;
 readonly class QuizConfiguration
 {
     /**
-     * In minutes
+     * In minutes.
      */
     #[ORM\Column(type: Types::INTEGER)]
     private int $duration;
 
     /**
-     * As percentage
+     * As percentage.
      */
     #[ORM\Column(type: Types::INTEGER)]
     private int $passingScore;
 
     public function __construct(
         int $duration,
-        int $passingScore
-    )
-    {
+        int $passingScore,
+    ) {
         $this->duration = $duration;
         $this->passingScore = $passingScore;
     }
 
     /**
-     * Returns value in minutes
+     * Returns value in minutes.
      */
     public function getDuration(): int
     {
@@ -38,7 +39,7 @@ readonly class QuizConfiguration
     }
 
     /**
-     * Returns value as percentage
+     * Returns value as percentage.
      */
     public function getPassingScore(): int
     {

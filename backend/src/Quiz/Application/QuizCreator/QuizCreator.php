@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Application\QuizCreator;
 
 use App\Quiz\Domain\Event\QuizCreatedEvent;
@@ -19,18 +21,13 @@ final readonly class QuizCreator implements QuizCreatorInterface
         private QuizRepositoryInterface $quizRepository,
         private EventDispatcherInterface $eventDispatcher,
         private ClockInterface $clock,
-    )
-    {
+    ) {
     }
 
     /**
      * @param array<Question> $questions
      */
-    public function create(
-        array $questions,
-        int $duration = 60,
-        int $passingScore = 70
-    ): Quiz
+    public function create(array $questions, int $duration = 60, int $passingScore = 70): Quiz
     {
         Assert::allIsInstanceOf($questions, Question::class);
         Assert::notEmpty($questions, 'Quiz must contain at least one question.');

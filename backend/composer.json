@@ -89,6 +89,21 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "tests": [
+            "@php bin/console doctrine:schema:drop --no-interaction --full-database --env=test --force >/dev/null 2>&1 || true",
+            "@php bin/console d:m:m --no-interaction --env=test >/dev/null 2>&1 || true",
+            "@php bin/console doctrine:fixtures:load --no-interaction --env=test",
+            "@php vendor/bin/phpunit -c phpunit.xml"
+        ],
+        "phpstan": [
+            "vendor/bin/phpstan analyse -c phpstan.neon --no-progress --memory-limit=-1 --ansi"
+        ],
+        "csfixer": [
+            "vendor/bin/php-cs-fixer fix --config=.cs-fixer.config.php --dry-run --allow-risky=yes --diff --ansi"
+        ],
+        "csfixer-fix": [
+            "vendor/bin/php-cs-fixer fix --config=.cs-fixer.config.php --allow-risky=yes --ansi"
         ]
     },
     "conflict": {
@@ -96,12 +111,19 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "7.3.*"
         }
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^8.4",
+        "doctrine/doctrine-fixtures-bundle": "^4.3",
+        "friendsofphp/php-cs-fixer": "^3.92",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^11.5.46",
+        "spaze/phpstan-disallowed-calls": "^4.7",
         "symfony/browser-kit": "7.3.*",
         "symfony/css-selector": "7.3.*",
         "symfony/debug-bundle": "7.3.*",

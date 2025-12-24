@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Infrastructure\Doctrine\Repository;
 
 use App\Quiz\Domain\Question;
@@ -30,9 +32,10 @@ final readonly class QuestionRepository implements QuestionRepositoryInterface
         $results = $this->repository->createQueryBuilder('u')
             ->select('u.id')
             ->getQuery()
-            ->getArrayResult();
+            ->getArrayResult()
+        ;
 
-        return array_map(function (array $result) {
+        return \array_map(function (array $result) {
             return $result['id'];
         }, $results);
     }

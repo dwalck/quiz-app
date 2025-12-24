@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Domain;
 
 use App\Quiz\Domain\Enum\QuizState;
@@ -24,13 +26,11 @@ readonly class QuizStateChange
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $changedAt;
 
-
     public function __construct(
         Uuid $id,
         QuizState $state,
-        \DateTimeImmutable $changedAt
-    )
-    {
+        \DateTimeImmutable $changedAt,
+    ) {
         $this->id = $id;
         $this->state = $state;
         $this->changedAt = $changedAt;

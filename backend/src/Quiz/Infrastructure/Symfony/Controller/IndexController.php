@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Infrastructure\Symfony\Controller;
 
 use App\Quiz\Application\QuizCreator\QuizCreatorInterface;
@@ -22,7 +24,7 @@ class IndexController extends AbstractController
     {
         $update = new Update(
             'x1',
-            json_encode(['status' => 'OutOfStock'])
+            \json_encode(['status' => 'OutOfStock'])
         );
 
         $hub->publish($update);

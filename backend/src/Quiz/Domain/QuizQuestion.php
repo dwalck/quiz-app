@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Domain;
 
 use Doctrine\DBAL\Types\Types;
@@ -34,9 +36,8 @@ class QuizQuestion
     public function __construct(
         Uuid $id,
         Quiz $quiz,
-        Question $question
-    )
-    {
+        Question $question,
+    ) {
         $this->id = $id;
         $this->quiz = $quiz;
         $this->question = $question;

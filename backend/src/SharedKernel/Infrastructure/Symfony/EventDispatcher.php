@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\SharedKernel\Infrastructure\Symfony;
 
 use App\SharedKernel\Application\EventDispatcherInterface;
@@ -8,9 +10,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as SymfonyEventDi
 final readonly class EventDispatcher implements EventDispatcherInterface
 {
     public function __construct(
-        private SymfonyEventDispatcherInterface $eventDispatcher
-    )
-    {
+        private SymfonyEventDispatcherInterface $eventDispatcher,
+    ) {
     }
 
     public function dispatch(object $event): void

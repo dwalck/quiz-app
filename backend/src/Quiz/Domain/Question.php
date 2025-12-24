@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Domain;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,9 +32,8 @@ class Question
     public function __construct(
         Uuid $id,
         string $content,
-        \DateTimeImmutable $createdAt
-    )
-    {
+        \DateTimeImmutable $createdAt,
+    ) {
         $this->id = $id;
         $this->content = $content;
         $this->createdAt = $createdAt;
@@ -50,11 +51,6 @@ class Question
         return $this->content;
     }
 
-    public function setContent(string $content): void
-    {
-        $this->content = $content;
-    }
-
     /**
      * @return array<QuestionAnswer>
      */
@@ -66,11 +62,6 @@ class Question
     public function addAnswer(QuestionAnswer $answer): void
     {
         $this->answers->add($answer);
-    }
-
-    public function removeAnswer(QuestionAnswer $answer): void
-    {
-        $this->answers->removeElement($answer);
     }
 
     public function getCreatedAt(): \DateTimeImmutable

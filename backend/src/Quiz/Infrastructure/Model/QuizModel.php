@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Infrastructure\Model;
 
 use Symfony\Component\Uid\Uuid;
@@ -14,8 +16,7 @@ final readonly class QuizModel
         public Uuid $uuid,
         public QuizConfigurationModel $configuration,
         public array $questions,
-    )
-    {
+    ) {
         Assert::allIsInstanceOf($this->questions, QuestionModel::class);
     }
 }

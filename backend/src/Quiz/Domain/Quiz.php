@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Domain;
 
 use App\Quiz\Domain\Enum\QuizState;
@@ -31,9 +33,8 @@ class Quiz
     public function __construct(
         Uuid $id,
         QuizConfiguration $configuration,
-        \DateTimeImmutable $createdAt
-    )
-    {
+        \DateTimeImmutable $createdAt,
+    ) {
         $this->id = $id;
         $this->configuration = $configuration;
 
@@ -73,39 +74,49 @@ class Quiz
         /** @var QuizStateChange $stateChange */
         $stateChange = $this->stateChanges->last();
 
-        if ($stateChange === null) {
+        if (null === $stateChange) {
             throw new \DomainException('Quiz does not have any state changes.');
         }
 
         return $stateChange->getState();
     }
 
-    public function makeStarted(\DateTimeImmutable $packedAt): void
+    public function makeStarted(\DateTimeImmutable $startedAt): void
     {
         if (($state = $this->getState()) !== QuizState::CREATED) {
             throw new CannotChangeQuizStateException($state, QuizState::STARTED);
         }
 
-        $this->addStatusChange(QuizState::STARTED, $packedAt);
+        $this->addStatusChange(QuizState::STARTED, $startedAt);
     }
 
-    public function makeFinished(\DateTimeImmutable $packedAt): void
+    public function makeFinished(\DateTimeImmutable $finishedAt): void
     {
         if (($state = $this->getState()) !== QuizState::STARTED) {
             throw new CannotChangeQuizStateException($state, QuizState::FINISHED);
         }
 
-        $this->addStatusChange(QuizState::FINISHED, $packedAt);
-    }
-
-    public function getMaximumFinishDate(): \DateTimeImmutable
-    {
-        return $this->getStatusChange(QuizState::STARTED)->getChangedAt()->modify(sprintf('+%d minutes', $this->configuration->getDuration()));
+        $this->addStatusChange(QuizState::FINISHED, $finishedAt);
     }
 
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->getStatusChange(QuizState::CREATED)->getChangedAt();
+    }
+
+    public function getStartedAt(): \DateTimeImmutable
+    {
+        return $this->getStatusChange(QuizState::STARTED)->getChangedAt();
+    }
+
+    public function getFinishedAt(): \DateTimeImmutable
+    {
+        return $this->getStatusChange(QuizState::FINISHED)->getChangedAt();
+    }
+
+    public function getMaximumFinishDate(): \DateTimeImmutable
+    {
+        return $this->getStatusChange(QuizState::STARTED)->getChangedAt()->modify(\sprintf('+%d minutes', $this->configuration->getDuration()));
     }
 
     private function getStatusChange(QuizState $state): QuizStateChange
@@ -116,7 +127,7 @@ class Quiz
             }
         }
 
-        throw new \DomainException(sprintf('Quiz does not have state change for state "%s".', $state->name));
+        throw new \DomainException(\sprintf('Quiz does not have state change for state "%s".', $state->name));
     }
 
     private function addStatusChange(QuizState $state, \DateTimeImmutable $at): void

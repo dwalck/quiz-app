@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Infrastructure\Symfony\Command;
 
 use App\Quiz\Domain\QuestionAnswer;
@@ -21,16 +23,14 @@ use Symfony\Component\Uid\Uuid;
 final readonly class AddQuestionCommand
 {
     public function __construct(
-        private EntityManagerInterface $em
-    )
-    {
+        private EntityManagerInterface $em,
+    ) {
     }
 
     public function __invoke(
         InputInterface $input,
         OutputInterface $output,
-    ): int
-    {
+    ): int {
         $symfonyStyle = new SymfonyStyle($input, $output);
 
         $helper = new QuestionHelper();
@@ -50,7 +50,7 @@ final readonly class AddQuestionCommand
                 Uuid::v4(),
                 $questionEntity,
                 $answer,
-                in_array($i, $validAnswersIndexes),
+                \in_array($i, $validAnswersIndexes),
                 new \DateTimeImmutable(),
             ));
         }
@@ -73,12 +73,12 @@ final readonly class AddQuestionCommand
 
         $i = 0;
         while (true) {
-            $i++;
-            $question = new Question(sprintf('Enter answer #%d: ', $i));
+            ++$i;
+            $question = new Question(\sprintf('Enter answer #%d: ', $i));
 
             $lastAnswer = $helper->ask($input, $output, $question);
 
-            if (in_array($lastAnswer, ['', null], true)) {
+            if (\in_array($lastAnswer, ['', null], true)) {
                 break;
             }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Quiz\Domain;
 
 use Doctrine\DBAL\Types\Types;
@@ -36,9 +38,8 @@ class QuestionAnswer
         Question $question,
         string $content,
         bool $correct,
-        \DateTimeImmutable $createdAt
-    )
-    {
+        \DateTimeImmutable $createdAt,
+    ) {
         $this->id = $id;
         $this->question = $question;
         $this->content = $content;

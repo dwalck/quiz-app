@@ -61,7 +61,9 @@ class Question
 
     public function addAnswer(QuestionAnswer $answer): void
     {
-        $this->answers->add($answer);
+        if (!$this->answers->contains($answer)) {
+            $this->answers->add($answer);
+        }
     }
 
     public function getCreatedAt(): \DateTimeImmutable

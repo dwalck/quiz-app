@@ -15,8 +15,6 @@ services:
     build:
       dockerfile: ../docker/php/Dockerfile
       context: ./backend
-    # uncomment the following line if you want to use a custom Dockerfile
-    #build: .
     # uncomment the following line if you want to run this in a production environment
     # restart: always
     ports:

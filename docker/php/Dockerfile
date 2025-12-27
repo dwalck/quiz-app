@@ -3,8 +3,9 @@ FROM dunglas/frankenphp:latest
 # Ustaw katalog roboczy
 WORKDIR /app
 
-# Skopiuj pliki aplikacji
-COPY . /app/public
+RUN apt-get update \
+    && apt-get install -y git \
+    && rm -rf /var/lib/apt/lists/*
 
 # Zainstaluj rozszerzenia PHP potrzebne dla Symfony
 RUN install-php-extensions \
@@ -13,7 +14,8 @@ RUN install-php-extensions \
     zip \
     opcache \
     pdo_pgsql \
-    pgsql
+    pgsql \
+    xdebug
 
 # 🧩 Zainstaluj Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

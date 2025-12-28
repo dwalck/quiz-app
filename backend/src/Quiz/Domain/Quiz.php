@@ -6,6 +6,7 @@ namespace App\Quiz\Domain;
 
 use App\Quiz\Domain\Enum\QuizState;
 use App\Quiz\Domain\Exception\CannotChangeQuizStateException;
+use App\Quiz\Domain\ValueObject\Quiz\QuizId;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,11 +16,8 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity]
 class Quiz
 {
-    #[
-        ORM\Id,
-        ORM\Column(type: UuidType::NAME)
-    ]
-    private readonly Uuid $id;
+    #[ORM\Embedded(columnPrefix: false)]
+    private readonly QuizId $id;
 
     #[ORM\OneToMany(targetEntity: QuizStateChange::class, mappedBy: 'quiz', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $stateChanges;
@@ -31,8 +29,8 @@ class Quiz
     private Collection $questions;
 
     public function __construct(
-        Uuid $id,
-        QuizConfiguration $configuration,
+        QuizId             $id,
+        QuizConfiguration  $configuration,
         \DateTimeImmutable $createdAt,
     ) {
         $this->id = $id;
@@ -44,7 +42,7 @@ class Quiz
         $this->addStatusChange(QuizState::CREATED, $createdAt);
     }
 
-    public function getId(): Uuid
+    public function getId(): QuizId
     {
         return $this->id;
     }

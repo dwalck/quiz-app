@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Tests\Unit\Quiz\Application\QuizCreator;
+namespace App\Tests\Unit\Quiz\Application\Command\CreateQuiz;
 
-use App\Quiz\Application\QuizCreator\QuizCreator;
+use App\Quiz\Application\Command\CreateQuiz\CreateQuizCommand;
+use App\Quiz\Application\Command\CreateQuiz\CreateQuizHandler;
+use App\Quiz\Application\Service\QuestionSelection\QuizSelectionServiceInterface;
 use App\Quiz\Domain\Enum\QuizState;
 use App\Quiz\Domain\Event\QuizCreatedEvent;
 use App\Quiz\Domain\Question;
@@ -16,8 +18,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(QuizCreator::class)]
-final class QuizCreatorTest extends TestCase
+#[CoversClass(CreateQuizHandler::class)]
+final class CreateQuizHandlerTest extends TestCase
 {
     private EventDispatcherInterface&MockObject $eventDispatcher;
 
@@ -25,10 +27,8 @@ final class QuizCreatorTest extends TestCase
 
     private ClockInterface&MockObject $clock;
 
-    /**
-     * @var array|(Question&MockObject[])
-     */
-    private array $questions;
+    private QuizSelectionServiceInterface $quizSelectionService;
+
     private Question $question1;
     private Question $question2;
     private Question $question3;
@@ -39,68 +39,33 @@ final class QuizCreatorTest extends TestCase
     {
         $this->quizRepository = $this->createMock(QuizRepositoryInterface::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->quizSelectionService = $this->createMock(QuizSelectionServiceInterface::class);
 
         $this->clock = $this->createMock(ClockInterface::class);
         $this->clock->method('now')->willReturn($this->now = new \DateTimeImmutable('2025-12-30 11:30:45'));
 
-        $this->questions = [
-            $this->question1 = $this->createQuestion(),
-            $this->question2 = $this->createQuestion(),
-            $this->question3 = $this->createQuestion(),
-        ];
-    }
-
-    #[DataProvider('getInvalidValues')]
-    public function test_create_will_throw_InvalidArgumentException_if_questions_contain_invalid_values(mixed $questions): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $this->callCreate($questions);
-    }
-
-    public static function getInvalidValues(): array
-    {
-        return [
-            'String' => [['test']],
-            'Int' => [[1]],
-            'True' => [[true]],
-            'False' => [[false]],
-            'Array' => [[[]]],
-            'stdClass' => [[new \stdClass()]],
-        ];
-    }
-
-    public function test_create_will_throw_InvalidArgumentException_if_questions_empty(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $this->callCreate([]);
-    }
-
-    public function test_create_will_throw_exception_with_correct_message(): void
-    {
-        $this->expectExceptionMessage('Quiz must contain at least one question.');
-
-        $this->callCreate([]);
+        $this->question1 = $this->createQuestion();
+        $this->question2 = $this->createQuestion();
+        $this->question3 = $this->createQuestion();
     }
 
     public function test_create_will_return_quiz_with_valid_createdAt(): void
     {
-        $quiz = $this->callCreate();
+        $quiz = $this->callInvoke();
 
         $this->assertSame($this->now, $quiz->getCreatedAt());
     }
 
     public function test_create_will_return_quiz_with_valid_state(): void
     {
-        $quiz = $this->callCreate();
+        $quiz = $this->callInvoke();
 
         $this->assertSame(QuizState::CREATED, $quiz->getState());
     }
 
     public function test_create_will_return_quiz_with_valid_configuration(): void
     {
-        $quiz = $this->callCreate(duration: 55, passingScore: 92);
+        $quiz = $this->callInvoke(duration: 55, passingScore: 92);
 
         $this->assertEquals(55, $quiz->getConfiguration()->getDuration());
         $this->assertEquals(92, $quiz->getConfiguration()->getPassingScore());
@@ -108,10 +73,16 @@ final class QuizCreatorTest extends TestCase
 
     public function test_create_will_return_quiz_with_questions(): void
     {
-        $quiz = $this->callCreate([
-            $this->question1,
-            $this->question3,
-        ]);
+        $this->quizSelectionService
+            ->method('select')
+            ->with(7)
+            ->willReturn([
+                $this->question1,
+                $this->question3
+            ])
+        ;
+
+        $quiz = $this->callInvoke(questionsCount: 7);
 
         $questions = array_map(function (QuizQuestion $question) {
             return $question->getQuestion();
@@ -136,7 +107,7 @@ final class QuizCreatorTest extends TestCase
             }))
         ;
 
-        $quiz = $this->callCreate();
+        $quiz = $this->callInvoke();
 
         $this->assertSame($quizFromEvent, $quiz);
     }
@@ -155,14 +126,18 @@ final class QuizCreatorTest extends TestCase
             }))
         ;
 
-        $quiz = $this->callCreate();
+        $quiz = $this->callInvoke();
 
         $this->assertSame($quizFromSaveRepository, $quiz);
     }
 
-    private function callCreate(?array $questions = null, int $duration = 60, int $passingScore = 70): Quiz
+    private function callInvoke(int $questionsCount = 5, int $duration = 60, int $passingScore = 70): Quiz
     {
-        return $this->createInstance()->create($questions ?? $this->questions, $duration, $passingScore);
+        return $this->createInstance()->__invoke(new CreateQuizCommand(
+            $questionsCount,
+            $duration,
+            $passingScore
+        ));
     }
 
     private function createQuestion(): Question&MockObject
@@ -170,12 +145,13 @@ final class QuizCreatorTest extends TestCase
         return $this->createMock(Question::class);
     }
 
-    private function createInstance(): QuizCreator
+    private function createInstance(): CreateQuizHandler
     {
-        return new QuizCreator(
+        return new CreateQuizHandler(
             $this->quizRepository,
             $this->eventDispatcher,
             $this->clock,
+            $this->quizSelectionService
         );
     }
 }

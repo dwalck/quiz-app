@@ -1,0 +1,41 @@
+deptrac:
+    paths:
+        - ./src
+    exclude_files:
+        - '#.*test.*#'
+    layers:
+        -
+            name: Infrastructure
+            collectors:
+                -
+                    type: classNameRegex
+                    value: '#^App\\[^\\]+\\Infrastructure\\.*#'
+        -
+            name: Domain
+            collectors:
+                -
+                    type: classNameRegex
+                    value: '#^App\\[^\\]+\\Domain\\.*#'
+        -
+            name: Application
+            collectors:
+                -
+                    type: classNameRegex
+                    value: '#^App\\[^\\]+\\Application\\.*#'
+        -   name: Symfony
+            collectors:
+                -   type: classNameRegex
+                    value: ~^Symfony\\~
+        -   name: Doctrine
+            collectors:
+                -   type: classNameRegex
+                    value: ~^Doctrine\\~
+    ruleset:
+        Infrastructure:
+            - Domain
+            - Application
+            - Symfony
+            - Doctrine
+        Application:
+            - Domain
+        Domain:

@@ -22,26 +22,52 @@ deptrac:
                 -
                     type: classNameRegex
                     value: '#^App\\[^\\]+\\Application\\.*#'
-        -   name: Symfony
-            collectors:
-                -   type: classNameRegex
-                    value: '#^Symfony\\(?!Component\\Uid\\).*#'
         -   name: Symfony UUID
             collectors:
                 -   type: classNameRegex
                     value: '#^Symfony\\Component\\Uid\\Uuid$#'
+        -   name: Symfony
+            collectors:
+                -   type: bool
+                    must:
+                        -   type: classNameRegex
+                            value: ~^Symfony\\~
+                    must_not:
+                        -   type: classNameRegex
+                            value: '#^Symfony\\Component\\Uid\\Uuid$#'
+                        -   type: classNameRegex
+                            value: '#^Symfony\\Bridge\\Doctrine\\Types\\UuidType$#'
+
         -   name: Doctrine mappings
             collectors:
                 -   type: classNameRegex
                     value: '#^Doctrine\\ORM\\Mapping$#'
+                -   type: classNameRegex
+                    value: '#^Symfony\\Bridge\\Doctrine\\Types$#'
+
+        -   name: Doctrine
+            collectors:
+                -   type: classNameRegex
+                    value: ~^Doctrine\\~
+
+        -   name: Webmozart assert
+            collectors:
+                -   type: classNameRegex
+                    value: ~^Webmozart\\~
+
     ruleset:
         Infrastructure:
             - Domain
             - Application
             - Symfony
             - Symfony UUID
+            - Doctrine
+            - Webmozart assert
         Application:
             - Domain
+            - Doctrine
+            - Webmozart assert
         Domain:
             - Symfony UUID
             - Doctrine mappings
+            - Webmozart assert

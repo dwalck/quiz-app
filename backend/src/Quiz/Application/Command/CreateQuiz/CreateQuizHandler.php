@@ -10,10 +10,10 @@ use App\Quiz\Domain\Quiz;
 use App\Quiz\Domain\QuizConfiguration;
 use App\Quiz\Domain\QuizQuestion;
 use App\Quiz\Domain\Repository\QuizRepositoryInterface;
+use App\Quiz\Domain\ValueObject\QuizQuestionId;
 use App\SharedKernel\Application\ClockInterface;
 use App\SharedKernel\Application\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Uid\Uuid;
 
 #[AsMessageHandler]
 final readonly class CreateQuizHandler
@@ -41,7 +41,7 @@ final readonly class CreateQuizHandler
 
         foreach ($questions as $question) {
             $quiz->addQuestion(new QuizQuestion(
-                Uuid::v4(),
+                QuizQuestionId::create(),
                 $quiz,
                 $question
             ));

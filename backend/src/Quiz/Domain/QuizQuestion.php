@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace App\Quiz\Domain;
 
+use App\Quiz\Domain\ValueObject\QuizQuestionId;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Types\UuidType;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 class QuizQuestion
 {
-    #[
-        ORM\Id,
-        ORM\Column(type: UuidType::NAME)
-    ]
-    private readonly Uuid $id;
+    #[ORM\Embedded(columnPrefix: false)]
+    private readonly QuizQuestionId $id;
 
     #[ORM\ManyToOne(targetEntity: Quiz::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -34,7 +30,7 @@ class QuizQuestion
     private ?\DateTimeImmutable $answeredAt;
 
     public function __construct(
-        Uuid $id,
+        QuizQuestionId $id,
         Quiz $quiz,
         Question $question,
     ) {
@@ -46,7 +42,7 @@ class QuizQuestion
         $this->answeredAt = null;
     }
 
-    public function getId(): Uuid
+    public function getId(): QuizQuestionId
     {
         return $this->id;
     }

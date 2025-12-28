@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Quiz\Application\Command\CreateQuiz;
 
-use App\Quiz\Domain\ValueObject\Quiz\QuizId;
+use App\Quiz\Domain\ValueObject\QuizId;
 use Symfony\Component\Messenger\Attribute\AsMessage;
 
 #[AsMessage]

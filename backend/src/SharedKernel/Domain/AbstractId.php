@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\SharedKernel\Domain;
 
 use Symfony\Component\Uid\Uuid;
@@ -7,8 +9,9 @@ use Symfony\Component\Uid\Uuid;
 abstract class AbstractId
 {
     protected function __construct(
-        protected readonly Uuid $value
-    ) {}
+        protected readonly Uuid $value,
+    ) {
+    }
 
     public static function create(): self
     {

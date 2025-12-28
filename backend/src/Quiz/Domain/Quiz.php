@@ -10,7 +10,6 @@ use App\Quiz\Domain\ValueObject\Quiz\QuizId;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
@@ -29,8 +28,8 @@ class Quiz
     private Collection $questions;
 
     public function __construct(
-        QuizId             $id,
-        QuizConfiguration  $configuration,
+        QuizId $id,
+        QuizConfiguration $configuration,
         \DateTimeImmutable $createdAt,
     ) {
         $this->id = $id;

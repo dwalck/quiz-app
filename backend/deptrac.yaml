@@ -36,24 +36,47 @@ deptrac:
                         -   type: classNameRegex
                             value: '#^Symfony\\Component\\Uid\\Uuid$#'
                         -   type: classNameRegex
-                            value: '#^Symfony\\Bridge\\Doctrine\\Types\\UuidType$#'
+                            value: '#^Symfony\\Bridge\\Doctrine\\Types\\.+$#'
+                        -   type: classNameRegex
+                            value: '#^Symfony\\Component\\Messenger\\Attribute\\.+$#'
 
         -   name: Doctrine mappings
             collectors:
                 -   type: classNameRegex
-                    value: '#^Doctrine\\ORM\\Mapping$#'
+                    value: '#^Doctrine\\ORM\\Mapping\\.+$#'
                 -   type: classNameRegex
-                    value: '#^Symfony\\Bridge\\Doctrine\\Types$#'
+                    value: '#^Symfony\\Bridge\\Doctrine\\Types\\.+$#'
+                -   type: classNameRegex
+                    value: '#^Doctrine\\DBAL\\Types\\Types$#'
 
         -   name: Doctrine
             collectors:
-                -   type: classNameRegex
-                    value: ~^Doctrine\\~
+                - type: bool
+                  must:
+                      -   type: classNameRegex
+                          value: ~^Doctrine\\~
+                  must_not:
+                      -   type: classNameRegex
+                          value: '#^Doctrine\\ORM\\Mapping\\.+$#'
+                      -   type: classNameRegex
+                          value: '#^Doctrine\\DBAL\\Types\\Types$#'
+                      -   type: classNameRegex
+                          value: '#^Doctrine\\Common\\Collections\\.+$#'
+
+        -   name: Doctrine collections
+            collectors:
+                - type: classNameRegex
+                  value: '#^Doctrine\\Common\\Collections\\.+$#'
 
         -   name: Webmozart assert
             collectors:
                 -   type: classNameRegex
                     value: ~^Webmozart\\~
+
+        - name: Symfony events & messenger attributes
+          collectors:
+                -  type: classNameRegex
+                   value: '#^Symfony\\Component\\Messenger\\Attribute\\.+$#'
 
     ruleset:
         Infrastructure:
@@ -67,7 +90,9 @@ deptrac:
             - Domain
             - Doctrine
             - Webmozart assert
+            - Symfony events & messenger attributes
         Domain:
             - Symfony UUID
             - Doctrine mappings
             - Webmozart assert
+            - Doctrine collections

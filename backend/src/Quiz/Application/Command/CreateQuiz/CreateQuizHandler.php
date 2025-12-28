@@ -12,8 +12,10 @@ use App\Quiz\Domain\QuizQuestion;
 use App\Quiz\Domain\Repository\QuizRepositoryInterface;
 use App\SharedKernel\Application\ClockInterface;
 use App\SharedKernel\Application\EventDispatcherInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Uid\Uuid;
 
+#[AsMessageHandler]
 final readonly class CreateQuizHandler
 {
     public function __construct(
@@ -24,12 +26,12 @@ final readonly class CreateQuizHandler
     ) {
     }
 
-    public function __invoke(CreateQuizCommand $command): Quiz
+    public function __invoke(CreateQuizCommand $command): void
     {
         $questions = $this->quizSelectionService->select($command->questionsCount);
 
         $quiz = new Quiz(
-            Uuid::v4(),
+            $command->quizId,
             new QuizConfiguration(
                 $command->duration,
                 $command->passingScore
@@ -48,7 +50,5 @@ final readonly class CreateQuizHandler
         $this->eventDispatcher->dispatch(new QuizCreatedEvent($quiz));
 
         $this->quizRepository->save($quiz);
-
-        return $quiz;
     }
 }

@@ -20,6 +20,10 @@ readonly class QuizStateChange
     ]
     private Uuid $id;
 
+    #[ORM\ManyToOne(targetEntity: Quiz::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private Quiz $quiz;
+
     #[ORM\Column(type: Types::STRING, length: 32, enumType: QuizState::class)]
     private QuizState $state;
 
@@ -28,10 +32,12 @@ readonly class QuizStateChange
 
     public function __construct(
         Uuid $id,
+        Quiz $quiz,
         QuizState $state,
         \DateTimeImmutable $changedAt,
     ) {
         $this->id = $id;
+        $this->quiz = $quiz;
         $this->state = $state;
         $this->changedAt = $changedAt;
     }
@@ -39,6 +45,11 @@ readonly class QuizStateChange
     public function getId(): Uuid
     {
         return $this->id;
+    }
+
+    public function getQuiz(): Quiz
+    {
+        return $this->quiz;
     }
 
     public function getState(): QuizState

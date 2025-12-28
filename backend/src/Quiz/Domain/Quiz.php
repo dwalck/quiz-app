@@ -21,13 +21,13 @@ class Quiz
     ]
     private readonly Uuid $id;
 
-    #[ORM\ManyToOne(targetEntity: QuizStateChange::class, inversedBy: 'quiz')]
+    #[ORM\OneToMany(targetEntity: QuizStateChange::class, mappedBy: 'quiz', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $stateChanges;
 
     #[ORM\Embedded(columnPrefix: 'configuration_')]
     private readonly QuizConfiguration $configuration;
 
-    #[ORM\ManyToOne(targetEntity: QuizQuestion::class, inversedBy: 'quiz')]
+    #[ORM\OneToMany(targetEntity: QuizQuestion::class, mappedBy: 'quiz', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $questions;
 
     public function __construct(
@@ -132,6 +132,6 @@ class Quiz
 
     private function addStatusChange(QuizState $state, \DateTimeImmutable $at): void
     {
-        $this->stateChanges->add(new QuizStateChange(Uuid::v4(), $state, $at));
+        $this->stateChanges->add(new QuizStateChange(Uuid::v4(), $this, $state, $at));
     }
 }

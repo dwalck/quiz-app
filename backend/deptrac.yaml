@@ -25,17 +25,23 @@ deptrac:
         -   name: Symfony
             collectors:
                 -   type: classNameRegex
-                    value: ~^Symfony\\~
-        -   name: Doctrine
+                    value: '#^Symfony\\(?!Component\\Uid\\).*#'
+        -   name: Symfony UUID
             collectors:
                 -   type: classNameRegex
-                    value: ~^Doctrine\\~
+                    value: '#^Symfony\\Component\\Uid\\Uuid$#'
+        -   name: Doctrine mappings
+            collectors:
+                -   type: classNameRegex
+                    value: '#^Doctrine\\ORM\\Mapping$#'
     ruleset:
         Infrastructure:
             - Domain
             - Application
             - Symfony
-            - Doctrine
+            - Symfony UUID
         Application:
             - Domain
         Domain:
+            - Symfony UUID
+            - Doctrine mappings

@@ -8,10 +8,10 @@ use App\Quiz\Domain\Question;
 use App\Quiz\Domain\QuestionAnswer;
 use App\Quiz\Domain\Quiz;
 use App\Quiz\Domain\QuizQuestion;
+use App\Quiz\Domain\ValueObject\QuizQuestionId;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * @internal
@@ -22,7 +22,7 @@ final class QuizQuestionTest extends TestCase
     public function testConstructorSetValidValues(): void
     {
         $instance = $this->createInstance(
-            $id = Uuid::v4(),
+            $id = QuizQuestionId::create(),
             $quiz = $this->createMock(Quiz::class),
             $question = $this->createMock(Question::class),
         );
@@ -85,12 +85,12 @@ final class QuizQuestionTest extends TestCase
     }
 
     private function createInstance(
-        ?Uuid $id = null,
+        ?QuizQuestionId $id = null,
         ?Quiz $quiz = null,
         ?Question $question = null,
     ): QuizQuestion {
         return new QuizQuestion(
-            $id ?? Uuid::v4(),
+            $id ?? QuizQuestionId::create(),
             $quiz ?? $this->createMock(Quiz::class),
             $question ?? $this->createMock(Question::class),
         );

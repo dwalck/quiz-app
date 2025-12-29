@@ -13,6 +13,7 @@ use App\Quiz\Domain\Question;
 use App\Quiz\Domain\Quiz;
 use App\Quiz\Domain\QuizQuestion;
 use App\Quiz\Domain\Repository\QuizRepositoryInterface;
+use App\Quiz\Domain\ValueObject\QuizId;
 use App\SharedKernel\Application\ClockInterface;
 use App\SharedKernel\Application\EventDispatcherInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -55,21 +56,42 @@ final class CreateQuizHandlerTest extends TestCase
 
     public function testCreateWillReturnQuizWithValidCreatedAt(): void
     {
-        $quiz = $this->callInvoke();
+        $quiz = null;
+        $this->quizRepository->method('save')->with($this->callback(function (Quiz $savedQuiz) use (&$quiz): bool {
+            $quiz = $savedQuiz;
+
+            return true;
+        }));
+
+        $this->callInvoke();
 
         $this->assertSame($this->now, $quiz->getCreatedAt());
     }
 
     public function testCreateWillReturnQuizWithValidState(): void
     {
-        $quiz = $this->callInvoke();
+        $quiz = null;
+        $this->quizRepository->method('save')->with($this->callback(function (Quiz $savedQuiz) use (&$quiz): bool {
+            $quiz = $savedQuiz;
+
+            return true;
+        }));
+
+        $this->callInvoke();
 
         $this->assertSame(QuizState::CREATED, $quiz->getState());
     }
 
     public function testCreateWillReturnQuizWithValidConfiguration(): void
     {
-        $quiz = $this->callInvoke(duration: 55, passingScore: 92);
+        $quiz = null;
+        $this->quizRepository->method('save')->with($this->callback(function (Quiz $savedQuiz) use (&$quiz): bool {
+            $quiz = $savedQuiz;
+
+            return true;
+        }));
+
+        $this->callInvoke(duration: 55, passingScore: 92);
 
         $this->assertEquals(55, $quiz->getConfiguration()->getDuration());
         $this->assertEquals(92, $quiz->getConfiguration()->getPassingScore());
@@ -77,6 +99,13 @@ final class CreateQuizHandlerTest extends TestCase
 
     public function testCreateWillReturnQuizWithQuestions(): void
     {
+        $quiz = null;
+        $this->quizRepository->method('save')->with($this->callback(function (Quiz $savedQuiz) use (&$quiz): bool {
+            $quiz = $savedQuiz;
+
+            return true;
+        }));
+
         $this->quizSelectionService
             ->method('select')
             ->with(7)
@@ -86,7 +115,7 @@ final class CreateQuizHandlerTest extends TestCase
             ])
         ;
 
-        $quiz = $this->callInvoke(questionsCount: 7);
+        $this->callInvoke(questionsCount: 7);
 
         $questions = \array_map(function (QuizQuestion $question) {
             return $question->getQuestion();
@@ -99,45 +128,42 @@ final class CreateQuizHandlerTest extends TestCase
 
     public function testCreateWillDispatchQuizCreatedEvent(): void
     {
-        $quizFromEvent = null;
+        $id = QuizId::create();
 
         $this->eventDispatcher
             ->expects($this->once())
             ->method('dispatch')
-            ->with($this->callback(function (QuizCreatedEvent $event) use (&$quizFromEvent) {
-                $quizFromEvent = $event->quiz;
-
-                return true;
+            ->with($this->callback(function (QuizCreatedEvent $event) use ($id) {
+                return $id->equals($event->quiz->getId());
             }))
         ;
 
-        $quiz = $this->callInvoke();
-
-        $this->assertSame($quizFromEvent, $quiz);
+        $this->callInvoke(quizId: $id);
     }
 
     public function testCreateWillCallSaveOnQuizRepository(): void
     {
-        $quizFromSaveRepository = null;
+        $id = QuizId::create();
 
         $this->quizRepository
             ->expects($this->once())
             ->method('save')
-            ->with($this->callback(function (Quiz $quiz) use (&$quizFromSaveRepository) {
-                $quizFromSaveRepository = $quiz;
-
-                return true;
+            ->with($this->callback(function (Quiz $quiz) use ($id) {
+                return $id->equals($quiz->getId());
             }))
         ;
 
-        $quiz = $this->callInvoke();
-
-        $this->assertSame($quizFromSaveRepository, $quiz);
+        $this->callInvoke(quizId: $id);
     }
 
-    private function callInvoke(int $questionsCount = 5, int $duration = 60, int $passingScore = 70): Quiz
-    {
-        return $this->createInstance()->__invoke(new CreateQuizCommand(
+    private function callInvoke(
+        ?QuizId $quizId = null,
+        int $questionsCount = 5,
+        int $duration = 60,
+        int $passingScore = 70,
+    ): void {
+        $this->createInstance()->__invoke(new CreateQuizCommand(
+            $quizId ?? QuizId::create(),
             $questionsCount,
             $duration,
             $passingScore

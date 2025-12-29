@@ -9,9 +9,9 @@ use App\Quiz\Domain\Exception\CannotChangeQuizStateException;
 use App\Quiz\Domain\Quiz;
 use App\Quiz\Domain\QuizConfiguration;
 use App\Quiz\Domain\QuizQuestion;
+use App\Quiz\Domain\ValueObject\QuizId;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * @internal
@@ -40,7 +40,7 @@ final class QuizTest extends TestCase
     public function testConstructor(): void
     {
         $instance = $this->createInstance(
-            $id = Uuid::v4(),
+            $id = QuizId::create(),
             $configuration = $this->createMock(QuizConfiguration::class),
             $createdAt = new \DateTimeImmutable(),
         );
@@ -169,7 +169,7 @@ final class QuizTest extends TestCase
     }
 
     private function createInstance(
-        ?Uuid $id = null,
+        ?QuizId $id = null,
         ?QuizConfiguration $configuration = null,
         \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
     ): Quiz {
@@ -180,7 +180,7 @@ final class QuizTest extends TestCase
         }
 
         return new Quiz(
-            $id ?? Uuid::v4(),
+            $id ?? QuizId::create(),
             $configuration,
             $createdAt
         );

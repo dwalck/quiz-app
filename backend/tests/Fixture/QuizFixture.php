@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Fixture;
 
 use App\Quiz\Domain\Quiz;
 use App\Quiz\Domain\QuizConfiguration;
 use App\Quiz\Domain\ValueObject\QuizId;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Persistence\ObjectManager;
 
 final class QuizFixture extends Fixture

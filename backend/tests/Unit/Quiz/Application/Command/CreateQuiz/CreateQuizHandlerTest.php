@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Unit\Quiz\Application\Command\CreateQuiz;
 
 use App\Quiz\Application\Command\CreateQuiz\CreateQuizCommand;
@@ -14,10 +16,12 @@ use App\Quiz\Domain\Repository\QuizRepositoryInterface;
 use App\SharedKernel\Application\ClockInterface;
 use App\SharedKernel\Application\EventDispatcherInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 #[CoversClass(CreateQuizHandler::class)]
 final class CreateQuizHandlerTest extends TestCase
 {
@@ -49,21 +53,21 @@ final class CreateQuizHandlerTest extends TestCase
         $this->question3 = $this->createQuestion();
     }
 
-    public function test_create_will_return_quiz_with_valid_createdAt(): void
+    public function testCreateWillReturnQuizWithValidCreatedAt(): void
     {
         $quiz = $this->callInvoke();
 
         $this->assertSame($this->now, $quiz->getCreatedAt());
     }
 
-    public function test_create_will_return_quiz_with_valid_state(): void
+    public function testCreateWillReturnQuizWithValidState(): void
     {
         $quiz = $this->callInvoke();
 
         $this->assertSame(QuizState::CREATED, $quiz->getState());
     }
 
-    public function test_create_will_return_quiz_with_valid_configuration(): void
+    public function testCreateWillReturnQuizWithValidConfiguration(): void
     {
         $quiz = $this->callInvoke(duration: 55, passingScore: 92);
 
@@ -71,20 +75,20 @@ final class CreateQuizHandlerTest extends TestCase
         $this->assertEquals(92, $quiz->getConfiguration()->getPassingScore());
     }
 
-    public function test_create_will_return_quiz_with_questions(): void
+    public function testCreateWillReturnQuizWithQuestions(): void
     {
         $this->quizSelectionService
             ->method('select')
             ->with(7)
             ->willReturn([
                 $this->question1,
-                $this->question3
+                $this->question3,
             ])
         ;
 
         $quiz = $this->callInvoke(questionsCount: 7);
 
-        $questions = array_map(function (QuizQuestion $question) {
+        $questions = \array_map(function (QuizQuestion $question) {
             return $question->getQuestion();
         }, $quiz->getQuestions());
 
@@ -93,7 +97,7 @@ final class CreateQuizHandlerTest extends TestCase
         $this->assertContains($this->question3, $questions);
     }
 
-    public function test_create_will_dispatch_QuizCreatedEvent(): void
+    public function testCreateWillDispatchQuizCreatedEvent(): void
     {
         $quizFromEvent = null;
 
@@ -112,7 +116,7 @@ final class CreateQuizHandlerTest extends TestCase
         $this->assertSame($quizFromEvent, $quiz);
     }
 
-    public function test_create_will_call_save_on_quizRepository(): void
+    public function testCreateWillCallSaveOnQuizRepository(): void
     {
         $quizFromSaveRepository = null;
 

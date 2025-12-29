@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Unit\Quiz\Domain;
 
 use App\Quiz\Domain\Enum\QuizState;
@@ -8,10 +10,13 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ * @internal
+ */
 #[CoversClass(QuizStateChange::class)]
 final class QuizStateChangeTest extends TestCase
 {
-    public function test_constructor_set_valid_values(): void
+    public function testConstructorSetValidValues(): void
     {
         $instance = $this->createInstance(
             $id = Uuid::v4(),
@@ -28,8 +33,7 @@ final class QuizStateChangeTest extends TestCase
         ?Uuid $id = null,
         ?QuizState $state = QuizState::STARTED,
         ?\DateTimeImmutable $changedAt = new \DateTimeImmutable('now'),
-    ): QuizStateChange
-    {
+    ): QuizStateChange {
         return new QuizStateChange(
             $id ?? Uuid::v4(),
             $state,

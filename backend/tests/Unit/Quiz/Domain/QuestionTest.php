@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Unit\Quiz\Domain;
 
 use App\Quiz\Domain\Question;
@@ -8,10 +10,13 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ * @internal
+ */
 #[CoversClass(Question::class)]
 final class QuestionTest extends TestCase
 {
-    public function test_construct(): void
+    public function testConstruct(): void
     {
         $question = new Question(
             $id = Uuid::v4(),
@@ -25,7 +30,7 @@ final class QuestionTest extends TestCase
         $this->assertCount(0, $question->getAnswers());
     }
 
-    public function test_addAnswer(): void
+    public function testAddAnswer(): void
     {
         $question = $this->createInstance();
 
@@ -40,6 +45,6 @@ final class QuestionTest extends TestCase
 
     private function createInstance(): Question
     {
-        return new Question(Uuid::v4(),'Hello world!',new \DateTimeImmutable());
+        return new Question(Uuid::v4(), 'Hello world!', new \DateTimeImmutable());
     }
 }

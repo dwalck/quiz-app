@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Unit\Quiz\Domain;
 
 use App\Quiz\Domain\Question;
@@ -11,10 +13,13 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ * @internal
+ */
 #[CoversClass(QuizQuestion::class)]
 final class QuizQuestionTest extends TestCase
 {
-    public function test_constructor_set_valid_values(): void
+    public function testConstructorSetValidValues(): void
     {
         $instance = $this->createInstance(
             $id = Uuid::v4(),
@@ -27,7 +32,7 @@ final class QuizQuestionTest extends TestCase
         $this->assertSame($question, $instance->getQuestion());
     }
 
-    public function test_constructor_set_valid_answer_values(): void
+    public function testConstructorSetValidAnswerValues(): void
     {
         $instance = $this->createInstance();
 
@@ -36,7 +41,7 @@ final class QuizQuestionTest extends TestCase
         $this->assertFalse($instance->isAnswerCorrect());
     }
 
-    public function test_answer_will_set_valid_answer(): void
+    public function testAnswerWillSetValidAnswer(): void
     {
         $instance = $this->createInstance();
         $instance->answer(
@@ -48,7 +53,7 @@ final class QuizQuestionTest extends TestCase
     }
 
     #[DataProvider('booleanDataProvider')]
-    public function test_isAnswerCorrect_will_return_valid_result(bool $isAnswerCorrect): void
+    public function testIsAnswerCorrectWillReturnValidResult(bool $isAnswerCorrect): void
     {
         $instance = $this->createInstance();
 
@@ -68,7 +73,7 @@ final class QuizQuestionTest extends TestCase
         ];
     }
 
-    public function test_answer_will_set_valid_answeredAt(): void
+    public function testAnswerWillSetValidAnsweredAt(): void
     {
         $instance = $this->createInstance();
         $instance->answer(
@@ -79,13 +84,11 @@ final class QuizQuestionTest extends TestCase
         $this->assertSame($date, $instance->getAnsweredAt());
     }
 
-
     private function createInstance(
         ?Uuid $id = null,
         ?Quiz $quiz = null,
         ?Question $question = null,
-    ): QuizQuestion
-    {
+    ): QuizQuestion {
         return new QuizQuestion(
             $id ?? Uuid::v4(),
             $quiz ?? $this->createMock(Quiz::class),

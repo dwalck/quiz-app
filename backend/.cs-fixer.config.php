@@ -4,6 +4,7 @@ use PhpCsFixer\Fixer\FunctionNotation\NativeFunctionInvocationFixer;
 
 $finder = PhpCsFixer\Finder::create()
     ->in('src')
+    ->in('tests')
     ->exclude(['var', 'migrations']);
 
 $config = new PhpCsFixer\Config();

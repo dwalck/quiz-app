@@ -21,6 +21,10 @@ readonly class QuizSelectionService implements QuizSelectionServiceInterface
     {
         $allIds = $this->questionRepository->getAllIds();
 
+        if (empty($allIds)) {
+            return [];
+        }
+
         $existingCount = \min($count, \count($allIds));
 
         $keys = \array_rand($allIds, $existingCount);

@@ -1,0 +1,53 @@
+version: 2.1
+
+jobs:
+  php:
+    docker:
+      - image: cimg/php:8.5
+        environment:
+          DATABASE_URL: "postgresql://user:secret@localhost:5432/quiz?serverVersion=18&charset=utf8"
+
+      - image: postgres:18
+        environment:
+          POSTGRES_DB: quiz_test
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: secret
+
+    working_directory: ~/project
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install dependencies
+          working_directory: ~/project/backend
+          command: composer install --no-interaction --prefer-dist
+
+      - run:
+          name: PHP version
+          command: php -v
+
+      - run:
+          name: CS Fixer
+          working_directory: ~/project/backend
+          command: composer csfixer
+
+      - run:
+          name: PHPStan
+          working_directory: ~/project/backend
+          command: composer phpstan
+
+      - run:
+          name: Deptrac
+          working_directory: ~/project/backend
+          command: composer deptrac
+
+      - run:
+          name: Tests
+          working_directory: ~/project/backend
+          command: composer tests
+
+workflows:
+  build:
+    jobs:
+      - php

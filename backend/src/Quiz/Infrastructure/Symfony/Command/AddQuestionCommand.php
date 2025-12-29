@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Quiz\Infrastructure\Symfony\Command;
 
 use App\Quiz\Domain\QuestionAnswer;
+use App\Quiz\Domain\ValueObject\QuestionId;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -41,7 +42,7 @@ final readonly class AddQuestionCommand
         $validAnswersIndexes = $this->getCorrectAnswersIndexes($answers, $input, $output);
 
         $questionEntity = new \App\Quiz\Domain\Question(
-            Uuid::v4(),
+            QuestionId::create(),
             $questionContent,
             new \DateTimeImmutable(),
         );

@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace App\Quiz\Domain;
 
+use App\Quiz\Domain\ValueObject\QuestionId;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Types\UuidType;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 class Question
 {
-    #[
-        ORM\Id,
-        ORM\Column(type: UuidType::NAME)
-    ]
-    private readonly Uuid $id;
+    #[ORM\Embedded(columnPrefix: false)]
+    private readonly QuestionId $id;
 
     #[ORM\Column(type: Types::STRING, length: 2000)]
     private string $content;
@@ -33,7 +29,7 @@ class Question
     private readonly \DateTimeImmutable $createdAt;
 
     public function __construct(
-        Uuid $id,
+        QuestionId $id,
         string $content,
         \DateTimeImmutable $createdAt,
     ) {
@@ -44,7 +40,7 @@ class Question
         $this->answers = new ArrayCollection();
     }
 
-    public function getId(): Uuid
+    public function getId(): QuestionId
     {
         return $this->id;
     }

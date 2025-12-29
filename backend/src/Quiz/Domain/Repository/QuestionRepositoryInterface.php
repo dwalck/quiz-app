@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace App\Quiz\Domain\Repository;
 
 use App\Quiz\Domain\Question;
-use Symfony\Component\Uid\Uuid;
+use App\Quiz\Domain\ValueObject\QuestionId;
 
 interface QuestionRepositoryInterface
 {
     /**
-     * @param array<Uuid> $ids
+     * @param array<QuestionId> $ids
      *
      * @return array<Question>
      */
     public function findByIds(array $ids): array;
 
     /**
-     * @return array<Uuid>
+     * @return array<QuestionId>
      */
     public function getAllIds(): array;
 }

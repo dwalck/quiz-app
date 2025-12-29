@@ -6,9 +6,9 @@ namespace App\Tests\Unit\Quiz\Domain;
 
 use App\Quiz\Domain\Question;
 use App\Quiz\Domain\QuestionAnswer;
+use App\Quiz\Domain\ValueObject\QuestionId;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * @internal
@@ -19,7 +19,7 @@ final class QuestionTest extends TestCase
     public function testConstruct(): void
     {
         $question = new Question(
-            $id = Uuid::v4(),
+            $id = QuestionId::create(),
             $content = 'Hello world!',
             $createdAt = new \DateTimeImmutable(),
         );
@@ -45,6 +45,6 @@ final class QuestionTest extends TestCase
 
     private function createInstance(): Question
     {
-        return new Question(Uuid::v4(), 'Hello world!', new \DateTimeImmutable());
+        return new Question(QuestionId::create(), 'Hello world!', new \DateTimeImmutable());
     }
 }

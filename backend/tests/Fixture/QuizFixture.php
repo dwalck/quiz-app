@@ -12,10 +12,12 @@ use Doctrine\Persistence\ObjectManager;
 
 final class QuizFixture extends Fixture
 {
+    public const string SAMPLE_QUIZ_UUID = '2db12bf4-8f4a-4825-bb5d-33271309f6fa';
+
     public function load(ObjectManager $manager): void
     {
         $quiz = new Quiz(
-            QuizId::create(),
+            QuizId::fromString(self::SAMPLE_QUIZ_UUID),
             new QuizConfiguration(
                 10,
                 15

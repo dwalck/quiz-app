@@ -24,6 +24,10 @@ readonly class QuizSelectionService implements QuizSelectionServiceInterface
         $existingCount = \min($count, \count($allIds));
 
         $keys = \array_rand($allIds, $existingCount);
+        if (!\is_array($keys)) {
+            // This condition will execute when there is only one question and array_rand returns a single element as an int|string
+            $keys = [$keys];
+        }
 
         $ids = [];
         foreach ($keys as $key) {

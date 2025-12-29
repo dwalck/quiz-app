@@ -13,6 +13,9 @@ use Webmozart\Assert\Assert;
 
 final readonly class QuestionRepository implements QuestionRepositoryInterface
 {
+    /**
+     * @var EntityRepository<Question>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -20,13 +23,19 @@ final readonly class QuestionRepository implements QuestionRepositoryInterface
         $this->repository = $entityManager->getRepository(Question::class);
     }
 
+    /**
+     * @return array<Question>
+     */
     public function findByIds(array $ids): array
     {
         Assert::allIsInstanceOf($ids, Uuid::class);
 
-        return $this->repository->findAll();
+        return $this->repository->findBy(['id' => $ids]);
     }
 
+    /**
+     * @return array<Uuid>
+     */
     public function getAllIds(): array
     {
         $results = $this->repository->createQueryBuilder('u')

@@ -6,12 +6,15 @@ namespace App\Quiz\Infrastructure\Doctrine\Repository;
 
 use App\Quiz\Domain\Quiz;
 use App\Quiz\Domain\Repository\QuizRepositoryInterface;
+use App\Quiz\Domain\ValueObject\QuizId;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Uid\Uuid;
 
 final readonly class QuizRepository implements QuizRepositoryInterface
 {
+    /**
+     * @var EntityRepository<Quiz>
+     */
     private EntityRepository $repository;
 
     public function __construct(private EntityManagerInterface $entityManager)
@@ -19,9 +22,9 @@ final readonly class QuizRepository implements QuizRepositoryInterface
         $this->repository = $entityManager->getRepository(Quiz::class);
     }
 
-    public function get(Uuid $id): Quiz
+    public function get(QuizId $id): Quiz
     {
-        return $this->repository->find($id);
+        return $this->repository->find($id->getValue());
     }
 
     public function save(Quiz $quiz): void

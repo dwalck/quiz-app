@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Quiz\Domain\Repository;
 
 use App\Quiz\Domain\Quiz;
-use Symfony\Component\Uid\Uuid;
+use App\Quiz\Domain\ValueObject\QuizId;
 
 interface QuizRepositoryInterface
 {
-    public function get(Uuid $id): Quiz;
+    public function get(QuizId $id): Quiz;
 
     public function save(Quiz $quiz): void;
 }

@@ -89,6 +89,8 @@ final readonly class AddQuestionCommand
     }
 
     /**
+     * @param array<string> $answers
+     *
      * @return array<int>
      */
     private function getCorrectAnswersIndexes(array $answers, InputInterface $input, OutputInterface $output): array

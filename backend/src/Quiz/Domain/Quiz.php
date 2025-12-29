@@ -18,12 +18,18 @@ class Quiz
     #[ORM\Embedded(columnPrefix: false)]
     private readonly QuizId $id;
 
+    /**
+     * @var Collection<int, QuizStateChange>
+     */
     #[ORM\OneToMany(targetEntity: QuizStateChange::class, mappedBy: 'quiz', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $stateChanges;
 
     #[ORM\Embedded(columnPrefix: 'configuration_')]
     private readonly QuizConfiguration $configuration;
 
+    /**
+     * @var Collection<int, QuizQuestion>
+     */
     #[ORM\OneToMany(targetEntity: QuizQuestion::class, mappedBy: 'quiz', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $questions;
 

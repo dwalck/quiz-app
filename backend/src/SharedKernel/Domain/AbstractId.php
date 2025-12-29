@@ -8,6 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 abstract class AbstractId
 {
     #[
@@ -36,5 +39,10 @@ abstract class AbstractId
     {
         return static::class === $other::class
             && $this->value->equals($other->value);
+    }
+
+    public function getValue(): Uuid
+    {
+        return $this->value;
     }
 }

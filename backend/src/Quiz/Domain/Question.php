@@ -23,6 +23,9 @@ class Question
     #[ORM\Column(type: Types::STRING, length: 2000)]
     private string $content;
 
+    /**
+     * @var Collection<int, QuestionAnswer>
+     */
     #[ORM\OneToMany(targetEntity: QuestionAnswer::class, mappedBy: 'question', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $answers;
 

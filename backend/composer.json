@@ -83,7 +83,7 @@
             "@php bin/console doctrine:schema:drop --no-interaction --full-database --env=test --force >/dev/null 2>&1 || true",
             "@php bin/console d:m:m --no-interaction --env=test >/dev/null 2>&1 || true",
             "@php bin/console doctrine:fixtures:load --no-interaction --env=test",
-            "@php vendor/bin/phpunit -c phpunit.xml"
+            "@php vendor/bin/phpunit"
         ],
         "phpstan": [
             "vendor/bin/phpstan analyse -c phpstan.neon --no-progress --memory-limit=-1 --ansi"

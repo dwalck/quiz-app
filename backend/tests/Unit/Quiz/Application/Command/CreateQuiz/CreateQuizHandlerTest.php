@@ -54,7 +54,7 @@ final class CreateQuizHandlerTest extends TestCase
         $this->question3 = $this->createQuestion();
     }
 
-    public function testCreateWillReturnQuizWithValidCreatedAt(): void
+    public function testWillReturnQuizWithValidCreatedAt(): void
     {
         $quiz = null;
         $this->quizRepository->method('save')->with($this->callback(function (Quiz $savedQuiz) use (&$quiz): bool {
@@ -68,7 +68,7 @@ final class CreateQuizHandlerTest extends TestCase
         $this->assertSame($this->now, $quiz->getCreatedAt());
     }
 
-    public function testCreateWillReturnQuizWithValidState(): void
+    public function testWillReturnQuizWithValidState(): void
     {
         $quiz = null;
         $this->quizRepository->method('save')->with($this->callback(function (Quiz $savedQuiz) use (&$quiz): bool {
@@ -82,7 +82,7 @@ final class CreateQuizHandlerTest extends TestCase
         $this->assertSame(QuizState::CREATED, $quiz->getState());
     }
 
-    public function testCreateWillReturnQuizWithValidConfiguration(): void
+    public function testWillReturnQuizWithValidConfiguration(): void
     {
         $quiz = null;
         $this->quizRepository->method('save')->with($this->callback(function (Quiz $savedQuiz) use (&$quiz): bool {
@@ -97,7 +97,7 @@ final class CreateQuizHandlerTest extends TestCase
         $this->assertEquals(92, $quiz->getConfiguration()->getPassingScore());
     }
 
-    public function testCreateWillReturnQuizWithQuestions(): void
+    public function testWillReturnQuizWithQuestions(): void
     {
         $quiz = null;
         $this->quizRepository->method('save')->with($this->callback(function (Quiz $savedQuiz) use (&$quiz): bool {
@@ -126,7 +126,7 @@ final class CreateQuizHandlerTest extends TestCase
         $this->assertContains($this->question3, $questions);
     }
 
-    public function testCreateWillDispatchQuizCreatedEvent(): void
+    public function testWillDispatchQuizCreatedEvent(): void
     {
         $id = QuizId::create();
 
@@ -141,7 +141,7 @@ final class CreateQuizHandlerTest extends TestCase
         $this->callInvoke(quizId: $id);
     }
 
-    public function testCreateWillCallSaveOnQuizRepository(): void
+    public function testWillCallSaveOnQuizRepository(): void
     {
         $id = QuizId::create();
 

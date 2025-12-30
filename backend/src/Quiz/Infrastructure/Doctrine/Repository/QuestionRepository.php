@@ -9,6 +9,7 @@ use App\Quiz\Domain\Repository\QuestionRepositoryInterface;
 use App\Quiz\Domain\ValueObject\QuestionId;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Uid\Uuid;
 use Webmozart\Assert\Assert;
 
 final readonly class QuestionRepository implements QuestionRepositoryInterface
@@ -30,7 +31,7 @@ final readonly class QuestionRepository implements QuestionRepositoryInterface
     {
         Assert::allIsInstanceOf($ids, QuestionId::class);
 
-        return $this->repository->findBy(['id' => \array_map(function (QuestionId $id) {
+        return $this->repository->findBy(['id.value' => \array_map(function (QuestionId $id) {
             return $id->getValue();
         }, $ids)]);
     }
@@ -41,13 +42,16 @@ final readonly class QuestionRepository implements QuestionRepositoryInterface
     public function getAllIds(): array
     {
         $results = $this->repository->createQueryBuilder('u')
-            ->select('u.id')
+            ->select('u.id.value AS id')
             ->getQuery()
             ->getArrayResult()
         ;
 
         return \array_map(function (array $result) {
-            return $result['id'];
+            /** @var Uuid $uuid */
+            $uuid = $result['id'];
+
+            return QuestionId::fromString($uuid->toString());
         }, $results);
     }
 }

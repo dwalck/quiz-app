@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Infrastructure\Symfony;
 
-use App\SharedKernel\Application\CommandDispatcherInterface;
+use App\SharedKernel\Application\QueryDispatcherInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-final readonly class CommandDispatcher implements CommandDispatcherInterface
+final readonly class QueryDispatcher implements QueryDispatcherInterface
 {
     public function __construct(
         private MessageBusInterface $messageBus,

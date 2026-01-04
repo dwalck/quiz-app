@@ -19,9 +19,15 @@ final readonly class QuestionRepository implements QuestionRepositoryInterface
      */
     private EntityRepository $repository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
         $this->repository = $entityManager->getRepository(Question::class);
+    }
+
+    public function save(Question $question): void
+    {
+        $this->entityManager->persist($question);
+        $this->entityManager->flush();
     }
 
     /**

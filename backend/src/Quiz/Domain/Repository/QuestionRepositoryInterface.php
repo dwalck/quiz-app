@@ -9,6 +9,8 @@ use App\Quiz\Domain\ValueObject\QuestionId;
 
 interface QuestionRepositoryInterface
 {
+    public function save(Question $question): void;
+
     /**
      * @param array<QuestionId> $ids
      *

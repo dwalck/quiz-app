@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Quiz\Infrastructure\Model;
+namespace App\Quiz\Application\Query\GetQuiz\Model;
 
-use Symfony\Component\Uid\Uuid;
+use App\Quiz\Domain\ValueObject\QuizId;
 use Webmozart\Assert\Assert;
 
 final readonly class QuizModel
 {
     /**
-     * @param array<QuestionModel> $questions
+     * @param array<QuizQuestionModel> $questions
      */
     public function __construct(
-        public Uuid $uuid,
+        public QuizId $id,
         public QuizConfigurationModel $configuration,
         public array $questions,
     ) {
-        Assert::allIsInstanceOf($this->questions, QuestionModel::class);
+        Assert::allIsInstanceOf($this->questions, QuizQuestionModel::class);
     }
 }

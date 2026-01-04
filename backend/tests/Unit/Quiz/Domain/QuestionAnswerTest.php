@@ -6,9 +6,9 @@ namespace App\Tests\Unit\Quiz\Domain;
 
 use App\Quiz\Domain\Question;
 use App\Quiz\Domain\QuestionAnswer;
+use App\Quiz\Domain\ValueObject\QuestionAnswerId;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * @internal
@@ -19,7 +19,7 @@ final class QuestionAnswerTest extends TestCase
     public function testConstruct(): void
     {
         $instance = $this->createInstance(
-            $id = Uuid::v4(),
+            $id = QuestionAnswerId::create(),
             $question = $this->createMock(Question::class),
             $content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             false,
@@ -34,7 +34,7 @@ final class QuestionAnswerTest extends TestCase
     }
 
     private function createInstance(
-        ?Uuid $id = null,
+        ?QuestionAnswerId $id = null,
         ?Question $question = null,
         string $content = 'Lorem ipsum.',
         bool $correct = true,

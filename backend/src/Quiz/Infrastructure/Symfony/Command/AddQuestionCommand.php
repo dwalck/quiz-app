@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Quiz\Infrastructure\Symfony\Command;
 
 use App\Quiz\Domain\QuestionAnswer;
+use App\Quiz\Domain\Repository\QuestionRepositoryInterface;
 use App\Quiz\Domain\ValueObject\QuestionAnswerId;
 use App\Quiz\Domain\ValueObject\QuestionId;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -24,7 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final readonly class AddQuestionCommand
 {
     public function __construct(
-        private EntityManagerInterface $em,
+        private QuestionRepositoryInterface $questionRepository,
     ) {
     }
 
@@ -55,8 +55,7 @@ final readonly class AddQuestionCommand
                 new \DateTimeImmutable(),
             ));
         }
-        $this->em->persist($questionEntity);
-        $this->em->flush();
+        $this->questionRepository->save($questionEntity);
 
         return Command::SUCCESS;
     }

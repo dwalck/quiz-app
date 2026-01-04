@@ -8,6 +8,7 @@ use App\Quiz\Domain\QuestionAnswer;
 use App\Quiz\Domain\Repository\QuestionRepositoryInterface;
 use App\Quiz\Domain\ValueObject\QuestionAnswerId;
 use App\Quiz\Domain\ValueObject\QuestionId;
+use App\SharedKernel\Application\ClockInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -25,6 +26,7 @@ final readonly class AddQuestionCommand
 {
     public function __construct(
         private QuestionRepositoryInterface $questionRepository,
+        private ClockInterface $clock,
     ) {
     }
 
@@ -39,23 +41,27 @@ final readonly class AddQuestionCommand
         $questionContent = $helper->ask($input, $output, $question);
 
         $answers = $this->getAnswers($symfonyStyle, $input, $output);
-        $validAnswersIndexes = $this->getCorrectAnswersIndexes($answers, $input, $output);
+        $validAnswers = $this->getCorrectAnswers($answers, $input, $output);
 
         $questionEntity = new \App\Quiz\Domain\Question(
             QuestionId::create(),
             $questionContent,
-            new \DateTimeImmutable(),
+            $this->clock->now(),
         );
+
         foreach ($answers as $i => $answer) {
             $questionEntity->addAnswer(new QuestionAnswer(
                 QuestionAnswerId::create(),
                 $questionEntity,
                 $answer,
-                \in_array($i, $validAnswersIndexes),
-                new \DateTimeImmutable(),
+                \in_array($answer, $validAnswers, true),
+                $this->clock->now(),
             ));
         }
         $this->questionRepository->save($questionEntity);
+
+        $symfonyStyle->newLine();
+        $symfonyStyle->success(\sprintf('Created question with id: %s.', $questionEntity->getId()->getValue()));
 
         return Command::SUCCESS;
     }
@@ -93,7 +99,7 @@ final readonly class AddQuestionCommand
      *
      * @return array<int>
      */
-    private function getCorrectAnswersIndexes(array $answers, InputInterface $input, OutputInterface $output): array
+    private function getCorrectAnswers(array $answers, InputInterface $input, OutputInterface $output): array
     {
         $helper = new QuestionHelper();
         $question = new ChoiceQuestion(

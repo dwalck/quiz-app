@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Quiz\Infrastructure\Symfony\Command;
 
 use App\Quiz\Domain\QuestionAnswer;
+use App\Quiz\Domain\ValueObject\QuestionAnswerId;
 use App\Quiz\Domain\ValueObject\QuestionId;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -15,7 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Uid\Uuid;
 
 #[AsCommand(
     name: 'quiz:question:add',
@@ -48,7 +48,7 @@ final readonly class AddQuestionCommand
         );
         foreach ($answers as $i => $answer) {
             $questionEntity->addAnswer(new QuestionAnswer(
-                Uuid::v4(),
+                QuestionAnswerId::create(),
                 $questionEntity,
                 $answer,
                 \in_array($i, $validAnswersIndexes),

@@ -1,11 +1,24 @@
-localhost
-
-mercure {
-    # The secret key used to sign the JWT tokens for publishers
-    publisher_jwt !ChangeThisMercureHubJWTSecretKey!
-    # Allows anonymous subscribers (without JWT)
-    anonymous
+{
+	auto_https disable_redirects
 }
 
-root public/
-php_server
+localhost {
+    root public/
+    php_server
+
+    mercure {
+        publisher_jwt !ChangeThisMercureHubJWTSecretKey!
+        anonymous
+    }
+}
+
+
+http://quiz-php {
+    root public/
+    php_server
+
+    mercure {
+        publisher_jwt !ChangeThisMercureHubJWTSecretKey!
+        anonymous
+    }
+}

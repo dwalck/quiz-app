@@ -42,7 +42,7 @@ final class QuestionRepositoryTest extends KernelTestCase
         $this->getEntityManager()->clear();
 
         $this->assertNotNull(
-            $this->getEntityManager()->getRepository(Question::class)->find($id)
+            $this->getEntityManager()->getRepository(Question::class)->find($id->getValue())
         );
     }
 

@@ -17,7 +17,7 @@ abstract class AbstractId
         ORM\Id,
         ORM\Column(name: 'id', type: UuidType::NAME)
     ]
-    protected readonly Uuid $value;
+    protected Uuid $value;
 
     protected function __construct(
         Uuid $value,

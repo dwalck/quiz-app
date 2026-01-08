@@ -9,14 +9,18 @@ use Webmozart\Assert\Assert;
 
 final readonly class QuizModel
 {
+    public string $id;
+
     /**
      * @param array<QuizQuestionModel> $questions
      */
     public function __construct(
-        public QuizId $id,
+        QuizId $id,
         public QuizConfigurationModel $configuration,
         public array $questions,
     ) {
+        $this->id = (string) $id->getValue();
+
         Assert::allIsInstanceOf($this->questions, QuizQuestionModel::class);
     }
 }

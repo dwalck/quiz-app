@@ -34,7 +34,7 @@ final class GetQuizHandlerTest extends TestCase
             )
         ));
 
-        $this->assertSame($id, $quiz->id);
+        $this->assertSame($id->getValue()->toString(), $quiz->id);
     }
 
     public function testReturnsModelWithCorrectConfiguration(): void
@@ -100,21 +100,21 @@ final class GetQuizHandlerTest extends TestCase
         $question2 = $quiz->questions[1];
 
         // ids
-        $this->assertEquals($question1Id, $question1->id);
-        $this->assertEquals($question2Id, $question2->id);
+        $this->assertEquals((string) $question1Id->getValue(), $question1->id);
+        $this->assertEquals((string) $question2Id->getValue(), $question2->id);
 
         // contents
         $this->assertEquals('What color is a lemon?', $question1->content);
         $this->assertEquals('Which symbol should be used to define a variable in PHP?', $question2->content);
 
         // answers ids
-        $this->assertEquals($question1Answer1Id, $question1->answers[0]->id);
-        $this->assertEquals($question1Answer2Id, $question1->answers[1]->id);
-        $this->assertEquals($question1Answer3Id, $question1->answers[2]->id);
-        $this->assertEquals($question1Answer4Id, $question1->answers[3]->id);
+        $this->assertEquals((string) $question1Answer1Id->getValue(), $question1->answers[0]->id);
+        $this->assertEquals((string) $question1Answer2Id->getValue(), $question1->answers[1]->id);
+        $this->assertEquals((string) $question1Answer3Id->getValue(), $question1->answers[2]->id);
+        $this->assertEquals((string) $question1Answer4Id->getValue(), $question1->answers[3]->id);
 
-        $this->assertEquals($question2Answer1Id, $question2->answers[0]->id);
-        $this->assertEquals($question2Answer2Id, $question2->answers[1]->id);
+        $this->assertEquals((string) $question2Answer1Id->getValue(), $question2->answers[0]->id);
+        $this->assertEquals((string) $question2Answer2Id->getValue(), $question2->answers[1]->id);
 
         // answers contents
         $this->assertEquals('Orange', $question1->answers[0]->content);

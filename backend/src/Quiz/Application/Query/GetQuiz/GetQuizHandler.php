@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Quiz\Application\Query\GetQuiz;
 
+use App\Quiz\Application\Query\GetQuiz\Exception\QuizNotFoundException;
 use App\Quiz\Application\Query\GetQuiz\Model\QuizConfigurationModel;
 use App\Quiz\Application\Query\GetQuiz\Model\QuizModel;
 use App\Quiz\Application\Query\GetQuiz\Model\QuizQuestionAnswerModel;
@@ -13,6 +14,7 @@ use App\Quiz\Domain\QuestionAnswer;
 use App\Quiz\Domain\Quiz;
 use App\Quiz\Domain\QuizQuestion;
 use App\Quiz\Domain\Repository\QuizRepositoryInterface;
+use App\SharedKernel\Domain\Exception\EntityNotFoundException;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -25,7 +27,11 @@ final readonly class GetQuizHandler
 
     public function __invoke(GetQuizQuery $query): QuizModel
     {
-        $quiz = $this->repository->get($query->quizId);
+        try {
+            $quiz = $this->repository->get($query->quizId);
+        } catch (EntityNotFoundException $e) {
+            throw new QuizNotFoundException();
+        }
 
         return new QuizModel(
             $quiz->getId(),

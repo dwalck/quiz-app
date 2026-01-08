@@ -8,9 +8,12 @@ use App\Quiz\Domain\ValueObject\QuestionAnswerId;
 
 final readonly class QuizQuestionAnswerModel
 {
+    public string $id;
+
     public function __construct(
-        public QuestionAnswerId $id,
+        QuestionAnswerId $id,
         public string $content,
     ) {
+        $this->id = (string) $id->getValue();
     }
 }

@@ -31,7 +31,7 @@ final readonly class GetQuizController
                 )
             ));
         } catch (QuizNotFoundException) {
-            return new JsonResponse([], status: Response::HTTP_NOT_FOUND);
+            return new JsonResponse((object) [], status: Response::HTTP_NOT_FOUND);
         }
     }
 }

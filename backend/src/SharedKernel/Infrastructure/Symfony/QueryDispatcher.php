@@ -6,8 +6,10 @@ namespace App\SharedKernel\Infrastructure\Symfony;
 
 use App\SharedKernel\Application\QueryDispatcherInterface;
 use App\SharedKernel\Infrastructure\Symfony\Exception\QueryNotHandledException;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
+use Webmozart\Assert\Assert;
 
 final readonly class QueryDispatcher implements QueryDispatcherInterface
 {
@@ -18,7 +20,15 @@ final readonly class QueryDispatcher implements QueryDispatcherInterface
 
     public function dispatch(object $command): object
     {
-        $envelope = $this->messageBus->dispatch($command);
+        try {
+            $envelope = $this->messageBus->dispatch($command);
+        } catch (HandlerFailedException $e) {
+            $exceptions = $e->getWrappedExceptions();
+
+            Assert::notEmpty($exceptions);
+
+            throw \reset($exceptions);
+        }
 
         if (null === $envelope->last(HandledStamp::class)) {
             throw new QueryNotHandledException($command);

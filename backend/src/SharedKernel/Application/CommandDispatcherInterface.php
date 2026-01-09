@@ -6,5 +6,5 @@ namespace App\SharedKernel\Application;
 
 interface CommandDispatcherInterface
 {
-    public function dispatch(object $command): object;
+    public function dispatch(object $command): void;
 }

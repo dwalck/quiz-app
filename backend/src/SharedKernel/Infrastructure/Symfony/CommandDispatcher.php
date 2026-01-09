@@ -14,8 +14,8 @@ final readonly class CommandDispatcher implements CommandDispatcherInterface
     ) {
     }
 
-    public function dispatch(object $command): object
+    public function dispatch(object $command): void
     {
-        return $this->messageBus->dispatch($command);
+        $this->messageBus->dispatch($command);
     }
 }

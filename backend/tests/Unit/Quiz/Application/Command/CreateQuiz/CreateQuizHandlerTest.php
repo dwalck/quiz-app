@@ -6,7 +6,7 @@ namespace App\Tests\Unit\Quiz\Application\Command\CreateQuiz;
 
 use App\Quiz\Application\Command\CreateQuiz\CreateQuizCommand;
 use App\Quiz\Application\Command\CreateQuiz\CreateQuizHandler;
-use App\Quiz\Application\Service\QuestionSelection\QuizSelectionServiceInterface;
+use App\Quiz\Application\Service\QuestionSelection\QuizQuestionsSelectionServiceInterface;
 use App\Quiz\Domain\Enum\QuizState;
 use App\Quiz\Domain\Event\QuizCreatedEvent;
 use App\Quiz\Domain\Question;
@@ -32,7 +32,7 @@ final class CreateQuizHandlerTest extends TestCase
 
     private ClockInterface&MockObject $clock;
 
-    private QuizSelectionServiceInterface $quizSelectionService;
+    private QuizQuestionsSelectionServiceInterface $quizQuestionsSelectionService;
 
     private Question $question1;
     private Question $question2;
@@ -44,7 +44,7 @@ final class CreateQuizHandlerTest extends TestCase
     {
         $this->quizRepository = $this->createMock(QuizRepositoryInterface::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $this->quizSelectionService = $this->createMock(QuizSelectionServiceInterface::class);
+        $this->quizQuestionsSelectionService = $this->createMock(QuizQuestionsSelectionServiceInterface::class);
 
         $this->clock = $this->createMock(ClockInterface::class);
         $this->clock->method('now')->willReturn($this->now = new \DateTimeImmutable('2025-12-30 11:30:45'));
@@ -106,7 +106,7 @@ final class CreateQuizHandlerTest extends TestCase
             return true;
         }));
 
-        $this->quizSelectionService
+        $this->quizQuestionsSelectionService
             ->method('select')
             ->with(7)
             ->willReturn([
@@ -181,7 +181,7 @@ final class CreateQuizHandlerTest extends TestCase
             $this->quizRepository,
             $this->eventDispatcher,
             $this->clock,
-            $this->quizSelectionService
+            $this->quizQuestionsSelectionService
         );
     }
 }

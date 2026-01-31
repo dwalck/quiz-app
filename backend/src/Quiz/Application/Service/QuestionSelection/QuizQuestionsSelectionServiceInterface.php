@@ -6,7 +6,7 @@ namespace App\Quiz\Application\Service\QuestionSelection;
 
 use App\Quiz\Domain\Question;
 
-interface QuizSelectionServiceInterface
+interface QuizQuestionsSelectionServiceInterface
 {
     /**
      * @return array<Question>

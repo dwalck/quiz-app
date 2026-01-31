@@ -7,7 +7,7 @@ namespace App\Quiz\Application\Service\QuestionSelection;
 use App\Quiz\Domain\Question;
 use App\Quiz\Domain\Repository\QuestionRepositoryInterface;
 
-readonly class QuizSelectionService implements QuizSelectionServiceInterface
+readonly class QuizQuestionsSelectionService implements QuizQuestionsSelectionServiceInterface
 {
     public function __construct(
         private QuestionRepositoryInterface $questionRepository,

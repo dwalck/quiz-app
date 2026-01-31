@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Quiz\Application\Command\CreateQuiz;
 
-use App\Quiz\Application\Service\QuestionSelection\QuizSelectionServiceInterface;
+use App\Quiz\Application\Service\QuestionSelection\QuizQuestionsSelectionServiceInterface;
 use App\Quiz\Domain\Event\QuizCreatedEvent;
 use App\Quiz\Domain\Quiz;
 use App\Quiz\Domain\QuizConfiguration;
@@ -22,13 +22,13 @@ final readonly class CreateQuizHandler
         private QuizRepositoryInterface $quizRepository,
         private EventDispatcherInterface $eventDispatcher,
         private ClockInterface $clock,
-        private QuizSelectionServiceInterface $quizSelectionService,
+        private QuizQuestionsSelectionServiceInterface $quizQuestionsSelectionService,
     ) {
     }
 
     public function __invoke(CreateQuizCommand $command): void
     {
-        $questions = $this->quizSelectionService->select($command->questionsCount);
+        $questions = $this->quizQuestionsSelectionService->select($command->questionsCount);
 
         $quiz = new Quiz(
             $command->quizId,

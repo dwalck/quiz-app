@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Quiz\Domain;
 
 use App\Quiz\Domain\Enum\QuizState;
+use App\Quiz\Domain\Event\QuizCreatedEvent;
+use App\Quiz\Domain\Event\QuizStartedEvent;
 use App\Quiz\Domain\Exception\CannotChangeQuizStateException;
 use App\Quiz\Domain\ValueObject\QuizId;
+use App\SharedKernel\Domain\RecordsDomainEventsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,6 +18,8 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity]
 class Quiz
 {
+    use RecordsDomainEventsTrait;
+
     #[ORM\Embedded(columnPrefix: false)]
     private readonly QuizId $id;
 
@@ -45,6 +50,8 @@ class Quiz
         $this->questions = new ArrayCollection();
 
         $this->addStatusChange(QuizState::CREATED, $createdAt);
+
+        $this->recordEvent(new QuizCreatedEvent($this));
     }
 
     public function getId(): QuizId
@@ -84,16 +91,17 @@ class Quiz
         return $stateChange->getState();
     }
 
-    public function makeStarted(\DateTimeImmutable $startedAt): void
+    public function start(\DateTimeImmutable $startedAt): void
     {
         if (($state = $this->getState()) !== QuizState::CREATED) {
             throw new CannotChangeQuizStateException($state, QuizState::STARTED);
         }
 
         $this->addStatusChange(QuizState::STARTED, $startedAt);
+        $this->recordEvent(new QuizStartedEvent($this));
     }
 
-    public function makeFinished(\DateTimeImmutable $finishedAt): void
+    public function finish(\DateTimeImmutable $finishedAt): void
     {
         if (($state = $this->getState()) !== QuizState::STARTED) {
             throw new CannotChangeQuizStateException($state, QuizState::FINISHED);

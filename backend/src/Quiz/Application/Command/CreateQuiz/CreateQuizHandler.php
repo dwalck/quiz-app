@@ -19,9 +19,9 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 final readonly class CreateQuizHandler
 {
     public function __construct(
-        private QuizRepositoryInterface $quizRepository,
-        private EventDispatcherInterface $eventDispatcher,
-        private ClockInterface $clock,
+        private QuizRepositoryInterface                $quizRepository,
+        private EventDispatcherInterface               $eventDispatcher,
+        private ClockInterface                         $clock,
         private QuizQuestionsSelectionServiceInterface $quizQuestionsSelectionService,
     ) {
     }
@@ -47,7 +47,9 @@ final readonly class CreateQuizHandler
             ));
         }
 
-        $this->eventDispatcher->dispatch(new QuizCreatedEvent($quiz));
+        foreach ($quiz->pullEvents() as $event) {
+            $this->eventDispatcher->dispatch($event);
+        }
 
         $this->quizRepository->save($quiz);
     }

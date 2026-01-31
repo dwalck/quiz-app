@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Quiz\Application\Command\StartQuiz;
 
-use App\Quiz\Infrastructure\Doctrine\Repository\QuizRepository;
+use App\Quiz\Domain\Repository\QuizRepositoryInterface;
 use App\SharedKernel\Application\ClockInterface;
+use App\SharedKernel\Application\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[AsMessageHandler]
 final readonly class StartQuizHandler
 {
     public function __construct(
-        private QuizRepository $quizRepository,
+        private QuizRepositoryInterface $quizRepository,
         private ClockInterface $clock,
         private EventDispatcherInterface $eventDispatcher,
     ) {

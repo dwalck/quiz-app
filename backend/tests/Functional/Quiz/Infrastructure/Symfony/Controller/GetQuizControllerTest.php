@@ -18,7 +18,7 @@ final class GetQuizControllerTest extends WebTestCase
 {
     private const string PATH = '/quiz/{uuid}';
 
-    private const string UUID = QuizFixture::SAMPLE_QUIZ_UUID;
+    private const string UUID = QuizFixture::QUIZ_STATE_CREATED_UUID;
 
     protected function setUp(): void
     {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Quiz\Application\Service;
 
-use App\Quiz\Application\Service\QuestionSelection\QuizSelectionService;
+use App\Quiz\Application\Service\QuestionSelection\QuizQuestionsSelectionService;
 use App\Quiz\Domain\Question;
 use App\Quiz\Domain\Repository\QuestionRepositoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -14,18 +14,18 @@ use Symfony\Component\Uid\Uuid;
 /**
  * @internal
  */
-#[CoversClass(QuizSelectionService::class)]
+#[CoversClass(QuizQuestionsSelectionService::class)]
 final class QuizSelectionServiceTest extends TestCase
 {
     private QuestionRepositoryInterface $questionRepository;
 
-    private QuizSelectionService $quizSelectionService;
+    private QuizQuestionsSelectionService $quizSelectionService;
 
     protected function setUp(): void
     {
         $this->questionRepository = $this->createMock(QuestionRepositoryInterface::class);
 
-        $this->quizSelectionService = new QuizSelectionService($this->questionRepository);
+        $this->quizSelectionService = new QuizQuestionsSelectionService($this->questionRepository);
     }
 
     public function testSelectWontCallRepositoryFindByIdsIfRepositoryGetAllIdsReturnsEmptyArray(): void

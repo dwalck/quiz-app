@@ -6,7 +6,7 @@ namespace App\Quiz\Domain\Event;
 
 use App\Quiz\Domain\Quiz;
 
-final readonly class QuizStartEvent
+final readonly class QuizStartedEvent
 {
     public function __construct(
         public Quiz $quiz,

@@ -34,7 +34,7 @@ final class QuizRepositoryTest extends KernelTestCase
     {
         $this->assertInstanceOf(
             Quiz::class,
-            $this->quizRepository->get(QuizId::fromString(QuizFixture::SAMPLE_QUIZ_UUID))
+            $this->quizRepository->get(QuizId::fromString(QuizFixture::QUIZ_STATE_CREATED_UUID))
         );
     }
 
@@ -63,13 +63,13 @@ final class QuizRepositoryTest extends KernelTestCase
 
     public function testSaveWillUpdate(): void
     {
-        $quiz = $this->quizRepository->get(QuizId::fromString(QuizFixture::SAMPLE_QUIZ_UUID));
-        $quiz->makeStarted(new \DateTimeImmutable());
+        $quiz = $this->quizRepository->get(QuizId::fromString(QuizFixture::QUIZ_STATE_CREATED_UUID));
+        $quiz->start(new \DateTimeImmutable());
 
         $this->quizRepository->save($quiz);
         $this->getEntityManager()->clear();
 
-        $updatedQuiz = $this->quizRepository->get(QuizId::fromString(QuizFixture::SAMPLE_QUIZ_UUID));
+        $updatedQuiz = $this->quizRepository->get(QuizId::fromString(QuizFixture::QUIZ_STATE_CREATED_UUID));
 
         $this->assertSame(QuizState::STARTED, $updatedQuiz->getState());
     }

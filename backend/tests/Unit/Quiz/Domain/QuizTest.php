@@ -30,11 +30,11 @@ final class QuizTest extends TestCase
         $this->baseInstance = $this->createInstance();
 
         $this->stateStartedInstance = $this->createInstance();
-        $this->stateStartedInstance->makeStarted(new \DateTimeImmutable('+5 days'));
+        $this->stateStartedInstance->start(new \DateTimeImmutable('+5 days'));
 
         $this->stateFinishedInstance = $this->createInstance();
-        $this->stateFinishedInstance->makeStarted(new \DateTimeImmutable('+5 days'));
-        $this->stateFinishedInstance->makeFinished(new \DateTimeImmutable('+7 days'));
+        $this->stateFinishedInstance->start(new \DateTimeImmutable('+5 days'));
+        $this->stateFinishedInstance->finish(new \DateTimeImmutable('+7 days'));
     }
 
     public function testConstructor(): void
@@ -67,82 +67,82 @@ final class QuizTest extends TestCase
         $this->assertContains($question2, $this->baseInstance->getQuestions());
     }
 
-    public function testMakeStartedWillSetSTARTEDState(): void
+    public function testStartWillSetSTARTEDState(): void
     {
-        $this->baseInstance->makeStarted(new \DateTimeImmutable());
+        $this->baseInstance->start(new \DateTimeImmutable());
 
         $this->assertSame(QuizState::STARTED, $this->baseInstance->getState());
     }
 
-    public function testMakeStartedWillStartedAt(): void
+    public function testStartWillStartedAt(): void
     {
-        $this->baseInstance->makeStarted($startAt = new \DateTimeImmutable('+5days'));
+        $this->baseInstance->start($startAt = new \DateTimeImmutable('+5days'));
 
         $this->assertSame($startAt, $this->baseInstance->getStartedAt());
     }
 
-    public function testMakeStartedWillThrowCannotChangeQuizStateExceptionAfterCalledMakeStartedBefore(): void
+    public function testStartWillThrowCannotChangeQuizStateExceptionAfterCalledMakeStartedBefore(): void
     {
-        $this->baseInstance->makeStarted(new \DateTimeImmutable('+5days'));
+        $this->baseInstance->start(new \DateTimeImmutable('+5days'));
 
         $this->expectException(CannotChangeQuizStateException::class);
 
-        $this->baseInstance->makeStarted(new \DateTimeImmutable('+6days'));
+        $this->baseInstance->start(new \DateTimeImmutable('+6days'));
     }
 
-    public function testMakeStartedWontUpdateMakeStartedAfterCalledMakeStartedBefore(): void
+    public function testStartWontUpdateMakeStartedAfterCalledMakeStartedBefore(): void
     {
         $beforeStartedAt = $this->stateStartedInstance->getStartedAt();
 
         try {
-            $this->stateStartedInstance->makeStarted(new \DateTimeImmutable('+60days'));
+            $this->stateStartedInstance->start(new \DateTimeImmutable('+60days'));
         } catch (\Throwable) {
         }
 
         $this->assertSame($beforeStartedAt, $this->stateStartedInstance->getStartedAt());
     }
 
-    public function testMakeStartedWillThrowCannotChangeQuizStateExceptionOnFINISHEDState(): void
+    public function testStartWillThrowCannotChangeQuizStateExceptionOnFINISHEDState(): void
     {
         $this->expectException(CannotChangeQuizStateException::class);
 
-        $this->stateFinishedInstance->makeStarted(new \DateTimeImmutable('+50days'));
+        $this->stateFinishedInstance->start(new \DateTimeImmutable('+50days'));
     }
 
-    public function testMakeFinishedWillSetFINISHEDState(): void
+    public function testFinishWillSetFINISHEDState(): void
     {
-        $this->stateStartedInstance->makeFinished(new \DateTimeImmutable());
+        $this->stateStartedInstance->finish(new \DateTimeImmutable());
 
         $this->assertSame(QuizState::FINISHED, $this->stateStartedInstance->getState());
     }
 
-    public function testMakeFinishedWillSetFinishedAt(): void
+    public function testFinishWillSetFinishedAt(): void
     {
-        $this->stateStartedInstance->makeFinished($finishedAt = new \DateTimeImmutable('+5days'));
+        $this->stateStartedInstance->finish($finishedAt = new \DateTimeImmutable('+5days'));
 
         $this->assertSame($finishedAt, $this->stateStartedInstance->getFinishedAt());
     }
 
-    public function testMakeFinishedWillThrowCannotChangeQuizStateExceptionAfterConstructor(): void
+    public function testFinishWillThrowCannotChangeQuizStateExceptionAfterConstructor(): void
     {
         $this->expectException(CannotChangeQuizStateException::class);
 
-        $this->baseInstance->makeFinished(new \DateTimeImmutable('+5days'));
+        $this->baseInstance->finish(new \DateTimeImmutable('+5days'));
     }
 
-    public function testMakeFinishedWillThrowCannotChangeQuizStateExceptionAfterMakeFinished(): void
+    public function testFinishWillThrowCannotChangeQuizStateExceptionAfterMakeFinished(): void
     {
         $this->expectException(CannotChangeQuizStateException::class);
 
-        $this->stateFinishedInstance->makeFinished(new \DateTimeImmutable('+5days'));
+        $this->stateFinishedInstance->finish(new \DateTimeImmutable('+5days'));
     }
 
-    public function testMakeFinishedWontChangeFinishedAtIfCalledTwice(): void
+    public function testFinishWontChangeFinishedAtIfCalledTwice(): void
     {
         $beforeFinishedAt = $this->stateFinishedInstance->getFinishedAt();
 
         try {
-            $this->stateFinishedInstance->makeFinished(new \DateTimeImmutable('+70days'));
+            $this->stateFinishedInstance->finish(new \DateTimeImmutable('+70days'));
         } catch (\Throwable) {
         }
 
@@ -156,7 +156,7 @@ final class QuizTest extends TestCase
         );
         $configuration->method('getDuration')->willReturn(70);
 
-        $instance->makeStarted(new \DateTimeImmutable('10:00:00 01.12.2025'));
+        $instance->start(new \DateTimeImmutable('10:00:00 01.12.2025'));
 
         $this->assertEquals('11:10:00 01.12.2025', $instance->getMaximumFinishDate()->format('H:i:s d.m.Y'));
     }

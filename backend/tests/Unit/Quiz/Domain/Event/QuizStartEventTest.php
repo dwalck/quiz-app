@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Quiz\Domain\Event;
 
-use App\Quiz\Domain\Event\QuizStartEvent;
+use App\Quiz\Domain\Event\QuizStartedEvent;
 use App\Quiz\Domain\Quiz;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(QuizStartEvent::class)]
+#[CoversClass(QuizStartedEvent::class)]
 final class QuizStartEventTest extends TestCase
 {
     public function testConstructorSetValidValues(): void
@@ -40,8 +40,8 @@ final class QuizStartEventTest extends TestCase
 
     private function createInstance(
         ?Quiz $quiz = null,
-    ): QuizStartEvent {
-        return new QuizStartEvent(
+    ): QuizStartedEvent {
+        return new QuizStartedEvent(
             $quiz ?? $this->createMock(Quiz::class),
         );
     }

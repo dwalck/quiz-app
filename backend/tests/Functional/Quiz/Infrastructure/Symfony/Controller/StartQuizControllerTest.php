@@ -11,6 +11,7 @@ use App\Tests\Fixture\QuizFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Clock\Test\ClockSensitiveTrait;
 
 /**
  * @internal
@@ -18,6 +19,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 #[CoversClass(StartQuizController::class)]
 final class StartQuizControllerTest extends WebTestCase
 {
+    use ClockSensitiveTrait;
+
     private const string PATH = '/quiz/{uuid}/start';
 
     private const string CREATED_UUID = QuizFixture::QUIZ_STATE_CREATED_UUID;
@@ -25,6 +28,8 @@ final class StartQuizControllerTest extends WebTestCase
     protected function setUp(): void
     {
         self::createClient();
+
+        self::mockTime('2026-01-31 10:00:00');
     }
 
     public function testItRespondHttpOk(): void
@@ -46,10 +51,20 @@ final class StartQuizControllerTest extends WebTestCase
         $quiz = $this->getQuiz();
 
         $this->assertSame(QuizState::STARTED, $quiz->getState());
+        $this->assertSame('2026-01-31 10:00:00', $quiz->getStartedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testItRespondHttp400IfQuizAlreadyStarted(): void
     {
+        $quizState = $this->getQuiz()->getState();
+        if (QuizState::CREATED !== $quizState) {
+            throw new \Exception(\sprintf('Test requires the quiz to have a status of "%s", but it has "%s".', QuizState::CREATED->value, $quizState->value));
+        }
+
+        $this->doRequest();
+        $this->doRequest();
+
+        $this->assertResponseStatusCodeSame(400);
     }
 
     private function doRequest(string $uuid = self::CREATED_UUID): void

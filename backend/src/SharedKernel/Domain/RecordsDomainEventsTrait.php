@@ -16,6 +16,9 @@ trait RecordsDomainEventsTrait
         $this->events[] = $event;
     }
 
+    /**
+     * @return array<object>
+     */
     public function pullEvents(): array
     {
         $events = $this->events;

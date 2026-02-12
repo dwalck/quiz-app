@@ -64,7 +64,6 @@ final class QuizRepositoryTest extends KernelTestCase
     public function testSaveWillUpdate(): void
     {
         $quiz = $this->quizRepository->get(QuizId::fromString(QuizFixture::QUIZ_STATE_CREATED_UUID));
-        $quiz->start(new \DateTimeImmutable());
 
         $this->quizRepository->save($quiz);
         $this->getEntityManager()->clear();

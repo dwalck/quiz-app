@@ -65,7 +65,7 @@ final class CreateQuizHandlerTest extends TestCase
 
         $this->callInvoke();
 
-        $this->assertSame($this->now, $quiz->getCreatedAt());
+        $this->assertSame($this->now, $quiz->getStartedAt());
     }
 
     public function testWillReturnQuizWithValidState(): void
@@ -79,7 +79,7 @@ final class CreateQuizHandlerTest extends TestCase
 
         $this->callInvoke();
 
-        $this->assertSame(QuizState::CREATED, $quiz->getState());
+        $this->assertSame(QuizState::STARTED, $quiz->getState());
     }
 
     public function testWillReturnQuizWithValidConfiguration(): void

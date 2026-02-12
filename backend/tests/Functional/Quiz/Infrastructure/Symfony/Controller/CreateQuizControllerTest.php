@@ -45,8 +45,8 @@ final class CreateQuizControllerTest extends WebTestCase
         $this->assertCount(2, $quiz->getQuestions());
         $this->assertEquals(54, $quiz->getConfiguration()->getDuration());
         $this->assertEquals(80, $quiz->getConfiguration()->getPassingScore());
-        $this->assertSame(QuizState::CREATED, $quiz->getState());
-        $this->assertEquals('2025-01-05 12:00:00', $quiz->getCreatedAt()->format('Y-m-d H:i:s'));
+        $this->assertSame(QuizState::STARTED, $quiz->getState());
+        $this->assertEquals('2025-01-05 12:00:00', $quiz->getStartedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testRequestValidDataWillCreateQuizWithNoAnsweredQuestions(): void

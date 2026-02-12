@@ -30,10 +30,8 @@ final class QuizTest extends TestCase
         $this->baseInstance = $this->createInstance();
 
         $this->stateStartedInstance = $this->createInstance();
-        $this->stateStartedInstance->start(new \DateTimeImmutable('+5 days'));
 
         $this->stateFinishedInstance = $this->createInstance();
-        $this->stateFinishedInstance->start(new \DateTimeImmutable('+5 days'));
         $this->stateFinishedInstance->finish(new \DateTimeImmutable('+7 days'));
     }
 
@@ -42,18 +40,18 @@ final class QuizTest extends TestCase
         $instance = $this->createInstance(
             $id = QuizId::create(),
             $configuration = $this->createMock(QuizConfiguration::class),
-            $createdAt = new \DateTimeImmutable(),
+            $startedAt = new \DateTimeImmutable(),
         );
 
         $this->assertSame($id, $instance->getId());
         $this->assertSame($configuration, $instance->getConfiguration());
-        $this->assertSame($createdAt, $instance->getCreatedAt());
+        $this->assertSame($startedAt, $instance->getStartedAt());
         $this->assertEmpty($instance->getQuestions());
     }
 
-    public function testConstructorWillSetCREATEDState(): void
+    public function testConstructorWillSetStartedState(): void
     {
-        $this->assertSame(QuizState::CREATED, $this->baseInstance->getState());
+        $this->assertSame(QuizState::STARTED, $this->baseInstance->getState());
     }
 
     public function testAddQuestion(): void
@@ -65,48 +63,6 @@ final class QuizTest extends TestCase
         $this->assertCount(2, $this->baseInstance->getQuestions());
         $this->assertContains($question1, $this->baseInstance->getQuestions());
         $this->assertContains($question2, $this->baseInstance->getQuestions());
-    }
-
-    public function testStartWillSetSTARTEDState(): void
-    {
-        $this->baseInstance->start(new \DateTimeImmutable());
-
-        $this->assertSame(QuizState::STARTED, $this->baseInstance->getState());
-    }
-
-    public function testStartWillStartedAt(): void
-    {
-        $this->baseInstance->start($startAt = new \DateTimeImmutable('+5days'));
-
-        $this->assertSame($startAt, $this->baseInstance->getStartedAt());
-    }
-
-    public function testStartWillThrowCannotChangeQuizStateExceptionAfterCalledMakeStartedBefore(): void
-    {
-        $this->baseInstance->start(new \DateTimeImmutable('+5days'));
-
-        $this->expectException(CannotChangeQuizStateException::class);
-
-        $this->baseInstance->start(new \DateTimeImmutable('+6days'));
-    }
-
-    public function testStartWontUpdateMakeStartedAfterCalledMakeStartedBefore(): void
-    {
-        $beforeStartedAt = $this->stateStartedInstance->getStartedAt();
-
-        try {
-            $this->stateStartedInstance->start(new \DateTimeImmutable('+60days'));
-        } catch (\Throwable) {
-        }
-
-        $this->assertSame($beforeStartedAt, $this->stateStartedInstance->getStartedAt());
-    }
-
-    public function testStartWillThrowCannotChangeQuizStateExceptionOnFINISHEDState(): void
-    {
-        $this->expectException(CannotChangeQuizStateException::class);
-
-        $this->stateFinishedInstance->start(new \DateTimeImmutable('+50days'));
     }
 
     public function testFinishWillSetFINISHEDState(): void
@@ -121,13 +77,6 @@ final class QuizTest extends TestCase
         $this->stateStartedInstance->finish($finishedAt = new \DateTimeImmutable('+5days'));
 
         $this->assertSame($finishedAt, $this->stateStartedInstance->getFinishedAt());
-    }
-
-    public function testFinishWillThrowCannotChangeQuizStateExceptionAfterConstructor(): void
-    {
-        $this->expectException(CannotChangeQuizStateException::class);
-
-        $this->baseInstance->finish(new \DateTimeImmutable('+5days'));
     }
 
     public function testFinishWillThrowCannotChangeQuizStateExceptionAfterMakeFinished(): void
@@ -152,26 +101,18 @@ final class QuizTest extends TestCase
     public function testGetMaximumFinishDate(): void
     {
         $instance = $this->createInstance(
-            configuration: $configuration = $this->createMock(QuizConfiguration::class)
+            configuration: $configuration = $this->createMock(QuizConfiguration::class),
+            startedAt: new \DateTimeImmutable('10:00:00 01.12.2025')
         );
         $configuration->method('getDuration')->willReturn(70);
 
-        $instance->start(new \DateTimeImmutable('10:00:00 01.12.2025'));
-
         $this->assertEquals('11:10:00 01.12.2025', $instance->getMaximumFinishDate()->format('H:i:s d.m.Y'));
-    }
-
-    public function testGetMaximumFinishDateWillThrowExceptionIfOnStatusCreated(): void
-    {
-        $this->expectException(\DomainException::class);
-
-        $this->baseInstance->getMaximumFinishDate();
     }
 
     private function createInstance(
         ?QuizId $id = null,
         ?QuizConfiguration $configuration = null,
-        \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
+        \DateTimeImmutable $startedAt = new \DateTimeImmutable(),
     ): Quiz {
         if (null === $configuration) {
             $configuration = $this->createMock(QuizConfiguration::class);
@@ -182,7 +123,7 @@ final class QuizTest extends TestCase
         return new Quiz(
             $id ?? QuizId::create(),
             $configuration,
-            $createdAt
+            $startedAt
         );
     }
 }

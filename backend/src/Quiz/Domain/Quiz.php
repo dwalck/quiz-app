@@ -6,7 +6,6 @@ namespace App\Quiz\Domain;
 
 use App\Quiz\Domain\Enum\QuizState;
 use App\Quiz\Domain\Event\QuizCreatedEvent;
-use App\Quiz\Domain\Event\QuizStartedEvent;
 use App\Quiz\Domain\Exception\CannotChangeQuizStateException;
 use App\Quiz\Domain\ValueObject\QuizId;
 use App\SharedKernel\Domain\RecordsDomainEventsTrait;
@@ -41,7 +40,7 @@ class Quiz
     public function __construct(
         QuizId $id,
         QuizConfiguration $configuration,
-        \DateTimeImmutable $createdAt,
+        \DateTimeImmutable $startedAt,
     ) {
         $this->id = $id;
         $this->configuration = $configuration;
@@ -49,7 +48,7 @@ class Quiz
         $this->stateChanges = new ArrayCollection();
         $this->questions = new ArrayCollection();
 
-        $this->addStatusChange(QuizState::CREATED, $createdAt);
+        $this->addStatusChange(QuizState::STARTED, $startedAt);
 
         $this->recordEvent(new QuizCreatedEvent($this));
     }
@@ -91,16 +90,6 @@ class Quiz
         return $stateChange->getState();
     }
 
-    public function start(\DateTimeImmutable $startedAt): void
-    {
-        if (($state = $this->getState()) !== QuizState::CREATED) {
-            throw new CannotChangeQuizStateException($state, QuizState::STARTED);
-        }
-
-        $this->addStatusChange(QuizState::STARTED, $startedAt);
-        $this->recordEvent(new QuizStartedEvent($this));
-    }
-
     public function finish(\DateTimeImmutable $finishedAt): void
     {
         if (($state = $this->getState()) !== QuizState::STARTED) {
@@ -108,11 +97,6 @@ class Quiz
         }
 
         $this->addStatusChange(QuizState::FINISHED, $finishedAt);
-    }
-
-    public function getCreatedAt(): \DateTimeImmutable
-    {
-        return $this->getStatusChange(QuizState::CREATED)->getChangedAt();
     }
 
     public function getStartedAt(): \DateTimeImmutable
